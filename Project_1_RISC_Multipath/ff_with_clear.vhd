@@ -6,14 +6,17 @@ entity ff_with_clear is
 end entity;
 
 architecture ff_with_clear_arch of T2 is
-
+signal temp: std_logic;
 begin
 
    process (CLK, CLEAR, EN)
    begin
 	 if CLK'event and (CLK = '1') then
       if(EN==1) then
-	     Q <= D and (not CLEAR);
+        temp <=D;
+	     Q <= temp and (not CLEAR);
+     else
+      Q <= temp;
 	 end if;
    end process;
 
