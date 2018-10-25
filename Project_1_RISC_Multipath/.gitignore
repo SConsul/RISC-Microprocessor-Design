@@ -1,0 +1,6 @@
+.DS_Store
+db/
+incremental_db/
+simulation/
+output_files/
+*.bak
