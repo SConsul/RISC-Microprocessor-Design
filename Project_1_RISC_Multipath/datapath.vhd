@@ -29,7 +29,7 @@ entity datapath is
   );
   end entity;
 
-  architecture dp is
+  architecture dp of datapath is
 
     component ALU is
       port(alu_op: in std_logic_vector(2 downto 1);

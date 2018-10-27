@@ -11,6 +11,6 @@ end entity SE6;
 
 architecture SignedExtender of SE6 is
 begin
-  out(5 downto 0) <= ip;
-  out(15 downto 6) <= ip(5);
+  op(5 downto 0) <= ip;
+  op(15 downto 6) <= ip(5);
 end SignedExtender;

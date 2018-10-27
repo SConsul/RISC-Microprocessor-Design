@@ -1,10 +1,10 @@
 use ieee.std_logic_1164.all;
 entity memory is
   port(clk: in std_logic;
-      mem_write_bar: in std_logic
+      mem_write_bar: in std_logic;
       address: in std_logic_vector(15 downto 0);
       data_in: in std_logic_vector(15 downto 0));
-      data_out: out std_logic_vector(15 downto 0));
+      data_out: out std_logic_vector(15 downto 0);
 end entity;
 
 architecture mem of memory is
@@ -21,4 +21,4 @@ begin
       data_out <= RAM_array(to_integer(unsigned(address)));
   end process;
 end architecture mem;
-T2toR7
+

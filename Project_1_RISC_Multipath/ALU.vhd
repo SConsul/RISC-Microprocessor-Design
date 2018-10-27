@@ -20,11 +20,11 @@ begin
     a_b(15 downto 0) := alu_b;
     a_b(16) := alu_b(15);
 
-    if alu_op = '00' then
+    if alu_op = "00" then
       a_o := a_a + a_b;
-    elsif alu_op ='01'
+    elsif alu_op ="01" then
       a_o := a_a - a_b;
-    elsif alu_op = '10'
+    elsif alu_op = "10" then
       a_out(15 downto 0) :=a_a(15 downto 0) nand a_b(15 downto 0);
     else
       a_o(15 downto 0) <='0';

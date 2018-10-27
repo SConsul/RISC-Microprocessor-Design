@@ -11,6 +11,6 @@ end entity SE9;
 
 architecture SignedExtender of SE9 is
 begin
-  out(8 downto 0) <= ip;
-  out(15 downto 9) <= ip(8);
+  op(8 downto 0) <= ip;
+  op(15 downto 9) <= ip(8);
 end SignedExtender;

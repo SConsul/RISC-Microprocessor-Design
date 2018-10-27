@@ -34,13 +34,13 @@ begin
       if rf_a3 = "111" then
         case(r7_wr_mux) is
           when "00" =>
-            rf(7) <= rf_d3
+            rf(7) <= rf_d3;
           when "01" =>
-            rf(7) <= pc_to_r7
+            rf(7) <= pc_to_r7;
           when "10" =>
-            rf(7) <= t2_to_r7
+            rf(7) <= t2_to_r7;
           when "11" =>
-            rf(7) <= alu_to_r7
+            rf(7) <= alu_to_r7;
         end case;
       else
         rf(to_integer(unsigned(rf_a3))) <= rf_d3;
