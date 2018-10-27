@@ -5,7 +5,7 @@ use ieee.numeric_std.all;
 entity datapath is
 Generic (NUM_BITS : INTEGER := 16);
   port(
-  CLK: in std_logic;
+  CLK,reset: in std_logic;
   alu_opr: in std_logic_vector(1 downto 0);
 	alu_a_mux: in std_logic_vector( 1 downto 0);
 	alu_b_mux: in std_logic_vector( 2 downto 0);
@@ -47,7 +47,7 @@ Generic (NUM_BITS : INTEGER := 16);
     end component;
 
     component reg is
-      port (EN, CLK: in std_logic;
+      port (EN, reset, CLK: in std_logic;
             ip: in std_logic_vector(15 downto 0);
             op: out std_logic_vector(15 downto 0));
     end component;
@@ -62,7 +62,7 @@ Generic (NUM_BITS : INTEGER := 16);
 
     component reg_3bit is
       port (
-            EN, CLK: in std_logic;
+            EN, reset, CLK: in std_logic;
             ip: in std_logic_vector(2 downto 0);
             op: out std_logic_vector(2 downto 0));
     end component;
@@ -81,7 +81,7 @@ Generic (NUM_BITS : INTEGER := 16);
 	end component;
 
     component flip_flop is
-      port (EN, CLK: in std_logic;
+      port (EN, reset, CLK: in std_logic;
             D: in std_logic;
             Q: out std_logic);
     end component;
@@ -122,20 +122,20 @@ Generic (NUM_BITS : INTEGER := 16);
 	 t4_out<= t4_op;
 	 ir_out <= ir_op;
 	 t2_out <= t2_op;
-	 
-	-- t2_update(15 downto 8) <= "0";
-      T1: reg port map(EN=>en_t1, CLK=>CLK, ip=>t1_ip, op=>t1_op);
-      T2: reg port map(EN=>en_t2, CLK=>CLK, ip=>t2_ip, op=>t2_op);
-      T3: reg port map(EN=>en_t3, CLK=>CLK, ip=>t3_ip, op=>t3_op);
-      T4: reg_3bit port map(EN=>en_t4, CLK=>CLK, ip=>t4_ip, op=>t4_op);
 
-      IR: reg port map(EN=>ir_en, CLK=>CLK, ip=>mem_d_out, op=>ir_op);
-      PC: reg port map(EN=>pc_en, CLK=>CLK, ip=>pc_in, op=>pc_out);
+	-- t2_update(15 downto 8) <= "0";
+      T1: reg port map(EN=>en_t1, reset=>reset, CLK=>CLK, ip=>t1_ip, op=>t1_op);
+      T2: reg port map(EN=>en_t2, reset=>reset, CLK=>CLK, ip=>t2_ip, op=>t2_op);
+      T3: reg port map(EN=>en_t3, reset=>reset, CLK=>CLK, ip=>t3_ip, op=>t3_op);
+      T4: reg_3bit port map(EN=>en_t4, reset=>reset, CLK=>CLK, ip=>t4_ip, op=>t4_op);
+
+      IR: reg port map(EN=>ir_en, reset=>reset, CLK=>CLK, ip=>mem_d_out, op=>ir_op);
+      PC: reg port map(EN=>pc_en, reset=>reset, CLK=>CLK, ip=>pc_in, op=>pc_out);
 
       ALU_datapath: ALU port map(alu_op=>alu_opr, alu_a=>alu_a, alu_b=>alu_b, alu_c=>alu_c, alu_z=>alu_z, alu_out=>alu_out);
-      C_flag: flip_flop port map(EN=>flagc_en, CLK=>CLK, D=>alu_c, Q=>flagc);
-      Z_flag: flip_flop port map(EN=>flagz_en, CLK=>CLK, D=>alu_z, Q=>flagz);
-      temp_Z: flip_flop port map(EN=>temp_z_en, CLK=>CLK, D=>alu_z, Q=>tempz);
+      C_flag: flip_flop port map(EN=>flagc_en, reset=>reset, CLK=>CLK, D=>alu_c, Q=>flagc);
+      Z_flag: flip_flop port map(EN=>flagz_en, reset=>reset, CLK=>CLK, D=>alu_z, Q=>flagz);
+      temp_Z: flip_flop port map(EN=>temp_z_en, reset=>reset, CLK=>CLK, D=>alu_z, Q=>tempz);
       PE: priority_encoder port map(ip=>t2_op(7 downto 0), op_addr=>t4_ip, update=>t2_update(7 downto 0));
 
       RF: RegFile port map(
@@ -273,7 +273,7 @@ Generic (NUM_BITS : INTEGER := 16);
           t1_ip <= (others => '0');
       end case;
 
-      case(t2_mux) is 
+      case(t2_mux) is
         when "00"=>
           t2_ip <= rf_d2;
         when "01"=>

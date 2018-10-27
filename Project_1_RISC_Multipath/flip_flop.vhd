@@ -2,7 +2,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 
 entity flip_flop is
-  port (D, EN, CLK: in std_logic;
+  port (D, EN, reset, CLK: in std_logic;
   Q: out std_logic);
 end entity;
 
@@ -13,9 +13,11 @@ begin
    begin
 
   if CLK'event and (CLK = '1') then
-    if(EN='1') then
+    if reset = '1' then
+      Q <= '0';
+    elsif(EN='1') then
         Q <= D;
-      end if;
+    end if;
 	 end if;
    end process;
 
