@@ -694,7 +694,7 @@ elsif(X(22 downto 18)="10010") then
 		rf_en<='1';
 		r7_wr_mux<="11";
 		rf_a1_mux<= "01";
-		rf_a3_mux<= "000";
+		rf_a3_mux<= "100";
 		rf_d3_mux<= "10";
 		mem_write_bar<='1';
 		mem_a_mux<="01";
@@ -720,7 +720,7 @@ elsif(X(22 downto 18)="10011") then
 		rf_en<='1';
 		r7_wr_mux<="10";
 		rf_a1_mux<= "01";
-		rf_a3_mux<= "000";
+		rf_a3_mux<= "100";
 		rf_d3_mux<= "10";
 		mem_write_bar<='1';
 		mem_a_mux<="01";
@@ -744,3 +744,4 @@ end if;
 end process;
 
 end Behave;
+
