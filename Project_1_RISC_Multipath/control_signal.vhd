@@ -37,8 +37,8 @@ begin
 process(X)
 begin
 if(X(22 downto 18)="00001") then
-    alu_op<="00"
-	alu_a_mux<="00"
+    alu_op<="00";
+	alu_a_mux<="00";
 	alu_b_mux<="001";
 	rf_en<='0';
 	r7_wr_mux<="00";
@@ -65,8 +65,8 @@ if(X(22 downto 18)="00001") then
 elsif(X(22 downto 18)="00010") then
 	temp_z_en<='1';
 	if((X(17 downto 14)="0000" or X(17 downto 14)="0010" ) and X(3 downto 1)="100" ) then
-		alu_op<="00"
-		alu_a_mux<="00"
+		alu_op<="00";
+		alu_a_mux<="00";
 		alu_b_mux<="001";
 		rf_en<='1';
 		r7_wr_mux<="01";
@@ -89,8 +89,8 @@ elsif(X(22 downto 18)="00010") then
 		t3_mux<='0';
 		pc_mux<= "000";
 	elsif((X(17 downto 14)="0000" or X(17 downto 14)="0010" ) and X(3 downto 2)="01" and X(0) = '0') then
-		alu_op<="00"
-		alu_a_mux<="00"
+		alu_op<="00";
+		alu_a_mux<="00";
 		alu_b_mux<="001";
 		rf_en<='1';
 		r7_wr_mux<="01";
@@ -113,8 +113,8 @@ elsif(X(22 downto 18)="00010") then
 		t3_mux<='0';
 		pc_mux<= "000";
 	else
-		alu_op<="00"
-		alu_a_mux<="00"
+		alu_op<="00";
+		alu_a_mux<="00";
 		alu_b_mux<="001";
 		rf_en<='0';
 		r7_wr_mux<="01";
@@ -146,7 +146,7 @@ elsif(X(22 downto 18)="00011") then
 		else 	
 			alu_op<="10";
 		end if;
-		alu_a_mux<="01"
+		alu_a_mux<="01";
 		alu_b_mux<="010";
 		rf_en<='0';
 		r7_wr_mux<="01";
@@ -175,7 +175,7 @@ elsif(X(22 downto 18)="00011") then
 		pc_mux<= "000";
 	elsif(X(17 downto 14) = "0001") then
 		alu_op<="00";
-		alu_a_mux<="01"
+		alu_a_mux<="01";
 		alu_b_mux<="100";
 		rf_en<='0';
 		r7_wr_mux<="01";
@@ -200,7 +200,7 @@ elsif(X(22 downto 18)="00011") then
 
 	elsif(X(17 downto 14) = "0100") then
 		alu_op<="00";
-		alu_a_mux<="10"
+		alu_a_mux<="10";
 		alu_b_mux<="100";
 		rf_en<='0';
 		r7_wr_mux<="01";
@@ -224,7 +224,7 @@ elsif(X(22 downto 18)="00011") then
 		pc_mux<= "000";
 	elsif(X(17 downto 14)="0101") then
 		alu_op<="00";
-		alu_a_mux<="10"
+		alu_a_mux<="10";
 		alu_b_mux<="100";
 		rf_en<='0';
 		r7_wr_mux<="01";
@@ -254,10 +254,10 @@ elsif(X(22 downto 18)="00100") then
 	temp_z_en<='1';
 	if (X(17 downto 14) = "0000" or X(17 downto 14) = "0010") then
 		alu_op<="00";
-		alu_a_mux<="10"
+		alu_a_mux<="10";
 		alu_b_mux<="100";
 		rf_en<='1';
-		if(X(7 downto 5)="111")
+		if(X(7 downto 5)="111") then
 		r7_wr_mux<="00";
 		else
 		r7_wr_mux<="01";
@@ -286,10 +286,10 @@ elsif(X(22 downto 18)="00100") then
 		end if;
 	elsif(X(17 downto 14)="0001") then
 		alu_op<="00";
-		alu_a_mux<="10"
+		alu_a_mux<="10";
 		alu_b_mux<="100";
 		rf_en<='1';
-		if(X(10 downto 8)="111")
+		if(X(10 downto 8)="111") then
 		r7_wr_mux<="00";
 		else
 		r7_wr_mux<="01";
@@ -318,10 +318,10 @@ elsif(X(22 downto 18)="00100") then
 		end if;
 	elsif(X(17 downto 14)="0011") then
 		alu_op<="00";
-		alu_a_mux<="10"
+		alu_a_mux<="10";
 		alu_b_mux<="100";
 		rf_en<='1';
-		if(X(13 downto 11)="111")
+		if(X(13 downto 11)="111") then
 		r7_wr_mux<="00";
 		else
 		r7_wr_mux<="01";
@@ -353,10 +353,10 @@ elsif(X(22 downto 18)="00100") then
 	end if;
 
 ------------------------------------------------------------------------------- State 6
-elsif(X(22 downto 18)="00110") then
+elsif(X(22 downto 18) = "00110") then
 		temp_z_en<='1';
 		alu_op<="00";
-		alu_a_mux<="10"
+		alu_a_mux<="10";
 		alu_b_mux<="100";
 		rf_en<='0';
 		r7_wr_mux<="01";
@@ -379,10 +379,10 @@ elsif(X(22 downto 18)="00110") then
 		t3_mux<='0';
 		pc_mux<= "000";
 ------------------------------------------------------------------------------- State 7
-elsif(X(22 downto 18)="00111") then
+elsif(X(22 downto 18) = "00111") then
 		temp_z_en<='1';
 		alu_op<="00";
-		alu_a_mux<="10"
+		alu_a_mux<="10";
 		alu_b_mux<="100";
 		rf_en<='0';
 		r7_wr_mux<="01";
@@ -405,13 +405,13 @@ elsif(X(22 downto 18)="00111") then
 		t3_mux<='0';
 		pc_mux<= "000";	
 -------------------------------------------------------------------------------State 8
-elsif(X(22 downto 18)="01000") then
+elsif(X(22 downto 18) = "01000") then
 		temp_z_en<='1';
 		alu_op<="00";
-		alu_a_mux<="01"
+		alu_a_mux<="01";
 		alu_b_mux<="000";
 		rf_en<='1';
-		if(X(13 downto 11)="111")
+		if(X(13 downto 11)="111") then
 		r7_wr_mux<="00";
 		else
 		r7_wr_mux<="01";
@@ -442,7 +442,7 @@ elsif(X(22 downto 18)="01000") then
 elsif(X(22 downto 18)="01001") then
 		temp_z_en<='1';
 		alu_op<="00";
-		alu_a_mux<="10"
+		alu_a_mux<="10";
 		alu_b_mux<="100";
 		rf_en<='1';
 		r7_wr_mux<="01";
@@ -468,7 +468,7 @@ elsif(X(22 downto 18)="01001") then
 elsif(X(22 downto 18)="01010") then
 		temp_z_en<='1';
 		alu_op<="00";
-		alu_a_mux<="10"
+		alu_a_mux<="10";
 		alu_b_mux<="100";
 		rf_en<='0';
 		r7_wr_mux<="01";
@@ -491,13 +491,13 @@ elsif(X(22 downto 18)="01010") then
 		t3_mux<='0';
 		pc_mux<= "000";
 ---------------------------------------------------------------State 11
-elsif(X(22 downto 18 = "01011")) then
+elsif(X(22 downto 18) = "01011") then
 		temp_z_en<='1';
 		alu_op<="00";
-		alu_a_mux<="01"
+		alu_a_mux<="01";
 		alu_b_mux<="001";
 		rf_en<='1';
-		if(X(25 downto 23)="111")
+		if(X(25 downto 23)="111") then
 		r7_wr_mux<="00";
 		else
 		r7_wr_mux<="01";
@@ -515,7 +515,7 @@ elsif(X(22 downto 18 = "01011")) then
 		if(X(25 downto 23) = "111") then
 		pc_en<= '1';
 		else
-		pc_en<=0;
+		pc_en<='0';
 		end if;
 		ir_en<= '0';
 		flagc_en<='0';
@@ -525,10 +525,10 @@ elsif(X(22 downto 18 = "01011")) then
 		t3_mux<='0';
 		pc_mux<= "100";
 -----------------------------------------------------------------State 12
-elsif(X(22 downto 18)="01100") then
+elsif(X(22 downto 18) =  "01100") then
 		temp_z_en<='1';
 		alu_op<="00";
-		alu_a_mux<="10"
+		alu_a_mux<="10";
 		alu_b_mux<="100";
 		rf_en<='0';
 		r7_wr_mux<="01";
@@ -551,10 +551,10 @@ elsif(X(22 downto 18)="01100") then
 		t3_mux<='0';
 		pc_mux<= "000";
 -----------------------------------------------------------------State 13
-elsif(X(22 downto 18)="01101") then
+elsif(X(22 downto 18) = "01101") then
 	    temp_z_en<='1';
 		alu_op<="00";
-		alu_a_mux<="10"
+		alu_a_mux<="10";
 		alu_b_mux<="100";
 		rf_en<='0';
 		r7_wr_mux<="01";
@@ -580,7 +580,7 @@ elsif(X(22 downto 18)="01101") then
 elsif(X(22 downto 18)="01110") then
 		temp_z_en<='1';
 		alu_op<="00";
-		alu_a_mux<="01"
+		alu_a_mux<="01";
 		alu_b_mux<="001";
 		rf_en<='1';
 		r7_wr_mux<="01";
@@ -606,7 +606,7 @@ elsif(X(22 downto 18)="01110") then
 elsif(X(22 downto 18)="01111") then
 		temp_z_en<='1';
 		alu_op<="01";
-		alu_a_mux<="01"
+		alu_a_mux<="01";
 		alu_b_mux<="010";
 		rf_en<='0';
 		r7_wr_mux<="01";
@@ -632,7 +632,7 @@ elsif(X(22 downto 18)="01111") then
 elsif(X(22 downto 18)="10000") then
 		temp_z_en<='0';
 		alu_op<="00";
-		alu_a_mux<="01"
+		alu_a_mux<="01";
 		alu_b_mux<="101";
 		rf_en<='1';
 		if(X(26) = '0')then
@@ -663,7 +663,7 @@ elsif(X(22 downto 18)="10000") then
 elsif(X(22 downto 18)="10001") then
 	    temp_z_en<='1';
 		alu_op<="00";
-		alu_a_mux<="01"
+		alu_a_mux<="01";
 		alu_b_mux<="001";
 		rf_en<='0';
 		r7_wr_mux<="01";
@@ -689,7 +689,7 @@ elsif(X(22 downto 18)="10001") then
 elsif(X(22 downto 18)="10010") then
 	    temp_z_en<='1';
 		alu_op<="00";
-		alu_a_mux<="11"
+		alu_a_mux<="11";
 		alu_b_mux<="011";
 		rf_en<='1';
 		r7_wr_mux<="11";
@@ -715,7 +715,7 @@ elsif(X(22 downto 18)="10010") then
 elsif(X(22 downto 18)="10011") then
 	    temp_z_en<='1';
 		alu_op<="00";
-		alu_a_mux<="11"
+		alu_a_mux<="11";
 		alu_b_mux<="011";
 		rf_en<='1';
 		r7_wr_mux<="10";
@@ -744,4 +744,3 @@ end if;
 end process;
 
 end Behave;
-

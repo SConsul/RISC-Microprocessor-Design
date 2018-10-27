@@ -253,7 +253,7 @@ e: decoder_5_ns port map (X(15 downto 0)=>x(21 downto 6),Z=>sig5);
 f: decoder_6_ns port map (X(15 downto 0)=>x(21 downto 6),Z=>sig6);
 --------------------------------------
 
-process(x,sig1,sig2,sig3,sig4,sig5,sig6,sig7)
+process(x,sig1,sig2,sig3,sig4,sig5,sig6)
 begin
 if(x(4 downto 0) = "00001") then
 	z<="00010";
@@ -263,7 +263,7 @@ elsif (x(4 downto 0) = "00011") then
 	z<=sig2;
 elsif (x(4 downto 0) = "00100") then
 	z<="00001";
-elsif (x(4 downto 0) = "00110" then
+elsif (x(4 downto 0) = "00110" )then
 	z<=sig3;	
 elsif (x(4 downto 0) = "00111") then
 	z<="01000";
