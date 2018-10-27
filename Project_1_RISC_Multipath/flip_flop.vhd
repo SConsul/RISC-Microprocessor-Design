@@ -9,7 +9,7 @@ end entity;
 architecture FlipFlop of flip_flop is
 begin
 
-   process(CLK, EN)
+   process(CLK, EN, D)
    begin
 
   if CLK'event and (CLK = '1') then

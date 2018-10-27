@@ -10,7 +10,7 @@ port (
     rf_d3 : in std_logic_vector(NUM_BITS - 1 downto 0);
     rf_d1, rf_d2 : out std_logic_vector(NUM_BITS - 1 downto 0);
     alu_to_r7, t2_to_r7, pc_to_r7 : in std_logic_vector (NUM_BITS - 1 downto 0);
-    r7_op : out std_logic_vector (NUM_BITS - 1 downto 0);
+   -- r7_op : out std_logic_vector (NUM_BITS - 1 downto 0);
     rf_wr: in std_logic;
     r7_wr_mux : in std_logic_vector(1 downto 0)
   );
@@ -25,9 +25,8 @@ begin
 
 rf_d1 <= rf(to_integer(unsigned(rf_a1)));
 rf_d2 <= rf(to_integer(unsigned(rf_a2)));
-r7_op <= rf(7);
 
-process(rf_a1,rf_a2,rf_a3,r7_ip, CLK)
+process(CLK, rf_a1,rf_a2,rf_a3, r7_wr_mux)
 begin
   if CLK'event and CLK = '1' then
     if rf_wr = '1' then

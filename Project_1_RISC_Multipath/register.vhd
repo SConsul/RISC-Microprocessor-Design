@@ -11,7 +11,7 @@ end entity;
 
 architecture reg_arch of reg is
 begin
-reg1 : process(ip)
+reg1 : process(CLK, EN, ip)
 begin
   if CLK'event and CLK = '1' then
     if EN = '1' then

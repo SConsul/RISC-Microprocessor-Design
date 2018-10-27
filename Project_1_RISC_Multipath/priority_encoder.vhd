@@ -46,6 +46,9 @@ process(ip)
   elsif ip(7) = '1' then
     op_addr <= "111";
     update <= "00000000";
+  else
+	 op_addr <= (others => '0');
+	 update <= (others => '0');
   end if;
 end process;
 end PriorityEncoder;
