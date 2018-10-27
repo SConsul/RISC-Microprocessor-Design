@@ -1,10 +1,10 @@
 use ieee.std_logic_1164.all;
 entity ALU is
-  port(aluop: in std_logic_vector(2 downto 1);
+  port(alu_op: in std_logic_vector(2 downto 1);
       alu_a: in std_logic_vector(15 downto 0);
       alu_b: in std_logic_vector(15 downto 0);
-      alu_c: in std_logic;
-      alu_z: in std_logic;
+      alu_c: out std_logic;
+      alu_z: out std_logic;
       alu_out: out std_logic_vector(15 downto 0));
 end entity;
 
@@ -12,7 +12,7 @@ architecture al of ALU is
 
 begin
 
-  process(aluop, alu_a, alu_b)
+  process(alu_op, alu_a, alu_b)
     begin
     variable a_o, a_a, a_b std_logic_vector(16 downto 0);
     a_a(15 downto 0) := alu_a;
@@ -20,11 +20,11 @@ begin
     a_b(15 downto 0) := alu_b;
     a_b(16) := alu_b(15);
 
-    if aluop = '00' then
-      a_c := a_a + a_b;
-    elsif aluop ='01'
+    if alu_op = '00' then
+      a_o := a_a + a_b;
+    elsif alu_op ='01'
       a_o := a_a - a_b;
-    elsif aluop = '10'
+    elsif alu_op = '10'
       a_out(15 downto 0) :=a_a(15 downto 0) nand a_b(15 downto 0);
     else
       a_o(15 downto 0) <='0';
