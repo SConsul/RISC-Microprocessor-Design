@@ -35,8 +35,10 @@ entity decoder_1_ns is
 		end if;
 	elsif (X(7 downto 4) = "0001" or X(7 downto 4) = "0100" or X(7 downto 4) = "0101" ) then
 		next_state_var := "00011";
-	elsif (X(7 downto 4) = "0110" or X(7 downto 4) = "0111" or X(7 downto 4) = "0011") then
+	elsif (X(7 downto 4) = "0110" or X(7 downto 4) = "0111") then
 		next_state_var := "00110";
+	elsif (X(7 downto 4) = "0011") then
+		next_state_var := "00100";
 	elsif (X(7 downto 4) = "1100") then
 		next_state_var := "01111";
 	elsif (X(7 downto 4) = "1000" or X(7 downto 4) = "1001") then
@@ -195,32 +197,7 @@ architecture Behave of decoder_6_ns is
 	end process;
 end architecture Behave;
 
---------------------------
-library std;
-use std.standard.all;
 
-library ieee;
-use ieee.std_logic_1164.all;
-
-entity decoder_7_ns is
-	port(X:in std_logic;
-	Z: out std_logic_vector( 4 downto 0));
-end entity;
-
-architecture Behave of decoder_7_ns is
-	begin
-	process(X)
-	variable next_state_var: std_logic_vector(4 downto 0);
-	begin
-
-	if(X = '0' ) then
-		next_state_var:= "00001";
-	else
-		next_state_var:= "10000";
-	end if;
-	Z<= next_state_var;
-	end process;
-end architecture Behave;
 -----------------------------------------
 library std;
 use std.standard.all;
@@ -264,11 +241,7 @@ component decoder_6_ns is
 	Z: out std_logic_vector( 4 downto 0));
 end component;
 
-component decoder_7_ns is
-	port(X:in std_logic;
-	Z: out std_logic_vector( 4 downto 0));
-end component;
-signal sig1,sig2,sig3,sig4,sig5,sig6,sig7: std_logic_vector(4 downto 0);
+signal sig1,sig2,sig3,sig4,sig5,sig6: std_logic_vector(4 downto 0);
 
 begin
 -------------------------------------
@@ -278,11 +251,10 @@ c: decoder_3_ns port map (X(3 downto 0)=>x(39 downto 36),Z=>sig3);
 d: decoder_4_ns port map (X(3 downto 0)=>x(39 downto 36),Z=>sig4);
 e: decoder_5_ns port map (X(15 downto 0)=>x(21 downto 6),Z=>sig5);
 f: decoder_6_ns port map (X(15 downto 0)=>x(21 downto 6),Z=>sig6);
-g: decoder_7_ns port map (X=>x(5),Z=>sig7);
 --------------------------------------
 
 process(x,sig1,sig2,sig3,sig4,sig5,sig6,sig7)
-
+begin
 if(x(4 downto 0) = "00001") then
 	z<="00010";
 elsif (x(4 downto 0) = "00010") then
@@ -310,7 +282,7 @@ elsif (x(4 downto 0) = "01101") then
 elsif (x(4 downto 0) = "01110") then
 	z<=sig6;
 elsif (x(4 downto 0) = "01111") then
-	z<=sig7;	
+	z<="10000";	
 elsif (x(4 downto 0) = "10000") then
 	z<="00001";		
 elsif (x(4 downto 0) = "10001") then
