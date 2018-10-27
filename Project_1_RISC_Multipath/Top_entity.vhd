@@ -4,11 +4,11 @@ use std.standard.all;
 library ieee;
 use ieee.std_logic_1164.all;
 
-entity Top_level is
+entity Top_entity is
 	port(reset,clock:in std_logic);
 end entity;
 
-architecture Behave of FSM is
+architecture Behave of Top_entity is
 
 component FSM is
 	port(reset,clock: in std_logic;
@@ -65,7 +65,7 @@ Generic (NUM_BITS : INTEGER := 16);
 	flagc_en:in std_logic;
 	flagz_en: in std_logic;
 	t1_mux: in std_logic_vector(1 downto 0);
-	t2_mux: in std_logic_vector(2 downto 0);
+	t2_mux: in std_logic_vector(1 downto 0);
 	t3_mux: in std_logic;
 	pc_mux: in std_logic_vector(2 downto 0);
   temp_z_en: in std_logic;
@@ -110,6 +110,6 @@ signal	pc_mux_sig: std_logic_vector(2 downto 0);
 
   a: FSM port map(clock=>clock,reset=>reset,IR=>ir_sig,Carry_reg=>Carry_reg_sig,Zero_reg=>Zero_reg_sig,T2=>T2_sig,temp_z=>temp_z_sig,T4=>T4_sig, alu_op=>alu_op_sig, alu_a_mux=>alu_a_mux_sig, alu_b_mux=>alu_b_mux_sig,rf_en=>rf_en_sig,r7_wr_mux=>r7_wr_mux_sig,rf_a1_mux=>rf_a1_mux_sig,rf_a3_mux=>rf_a3_mux_sig,rf_d3_mux=>rf_d3_mux_sig,mem_write_bar=>mem_write_bar_sig,mem_a_mux=>mem_a_mux_sig,mem_d_mux=>mem_d_mux_sig,en_t1=>en_t1_sig,en_t2=>en_t2_sig,en_t3=>en_t3_sig,en_t4=>en_t4_sig,pc_en=>pc_en_sig,ir_en=>ir_en_sig,temp_z_en=>temp_z_en_sig,flagc_en=>flagc_en_sig,flagz_en=>flagz_en_sig,t1_mux=>t1_mux_sig,t2_mux=>t2_mux_sig,t3_mux=>t3_mux_sig,pc_mux=>pc_mux_sig);
 
-  b: datapath port map(alu_opr=>alu_op_sig, alu_a_mux=>alu_a_mux_sig, alu_b_mux=>alu_b_mux_sig,rf_en=>rf_en_sig,r7_wr_mux=>r7_wr_mux_sig,rf_a1_mux=>rf_a1_mux_sig,rf_a3_mux=>rf_a3_mux_sig,rf_d3_mux=>rf_d3_mux_sig,mem_write_bar=>mem_write_bar_sig,mem_a_mux=>mem_a_mux_sig,mem_d_mux=>mem_d_mux_sig,en_t1=>en_t1_sig,en_t2=>en_t2_sig,en_t3=>en_t3_sig,en_t4=>en_t4_sig,pc_en=>pc_en_sig,ir_en=>ir_en_sig,temp_z_en=>temp_z_en_sig,flagc_en=>flagc_en_sig,flagz_en=>flagz_en_sig,t1_mux=>t1_mux_sig,t2_mux=>t2_mux_sig,t3_mux=>t3_mux_sig,pc_mux=>pc_mux_sig,ir_out=>ir_sig,flagc=>Carry_reg_sig,flagz=>Zero_reg_sig,t2_out=>T2_sig,tempz=>temp_z_sig,t4_out=>T4_sig);
-  end Behave
+  b: datapath port map(CLK=>clock,alu_opr=>alu_op_sig, alu_a_mux=>alu_a_mux_sig, alu_b_mux=>alu_b_mux_sig,rf_en=>rf_en_sig,r7_wr_mux=>r7_wr_mux_sig,rf_a1_mux=>rf_a1_mux_sig,rf_a3_mux=>rf_a3_mux_sig,rf_d3_mux=>rf_d3_mux_sig,mem_write_bar=>mem_write_bar_sig,mem_a_mux=>mem_a_mux_sig,mem_d_mux=>mem_d_mux_sig,en_t1=>en_t1_sig,en_t2=>en_t2_sig,en_t3=>en_t3_sig,en_t4=>en_t4_sig,pc_en=>pc_en_sig,ir_en=>ir_en_sig,temp_z_en=>temp_z_en_sig,flagc_en=>flagc_en_sig,flagz_en=>flagz_en_sig,t1_mux=>t1_mux_sig,t2_mux=>t2_mux_sig,t3_mux=>t3_mux_sig,pc_mux=>pc_mux_sig,ir_out=>ir_sig,flagc=>Carry_reg_sig,flagz=>Zero_reg_sig,t2_out=>T2_sig,tempz=>temp_z_sig,t4_out=>T4_sig);
+  end Behave;
 
