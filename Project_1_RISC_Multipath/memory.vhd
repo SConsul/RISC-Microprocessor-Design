@@ -4,6 +4,7 @@ entity memory is
       mem_write_bar: in std_logic
       address: in std_logic_vector(15 downto 0);
       data_in: in std_logic_vector(15 downto 0));
+      data_out: out std_logic_vector(15 downto 0));
 end entity;
 
 architecture mem of memory is
