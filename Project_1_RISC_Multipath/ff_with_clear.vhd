@@ -11,7 +11,7 @@ begin
 
    process(CLK, CLEAR, EN)
    begin
-	
+
 	 if CLK'event and (CLK = '1') then
 		if(EN='1') then
 	      temp <=D;

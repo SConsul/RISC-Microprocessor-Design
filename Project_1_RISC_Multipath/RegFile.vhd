@@ -9,9 +9,10 @@ port (
     rf_a1, rf_a2, rf_a3 : in std_logic_vector (2 downto 0);
     rf_d3 : in std_logic_vector(NUM_BITS - 1 downto 0);
     rf_d1, rf_d2 : out std_logic_vector(NUM_BITS - 1 downto 0);
-    r7_ip : in std_logic_vector (NUM_BITS - 1 downto 0);
+    alu_to_r7, t2_to_r7, pc_to_r7 : in std_logic_vector (NUM_BITS - 1 downto 0);
     r7_op : out std_logic_vector (NUM_BITS - 1 downto 0);
-    rf_wr, r7_wr : in std_logic
+    rf_wr: in std_logic;
+    r7_wr_mux : in std_logic_vector(1 downto 0)
   );
 end entity RegFile;
 
@@ -30,10 +31,20 @@ process(rf_a1,rf_a2,rf_a3,r7_ip, CLK)
 begin
   if CLK'event and CLK = '1' then
     if rf_wr = '1' then
-      rf(to_integer(unsigned(rf_a3))) <= rf_d3;
-    end if;
-    if r7_wr = '1' then
-      rf(7) <= r7_ip;
+      if rf_a3 = "111" then
+        case(r7_wr_mux) is
+          when "00" =>
+            rf(7) <= rf_d3
+          when "01" =>
+            rf(7) <= pc_to_r7
+          when "10" =>
+            rf(7) <= t2_to_r7
+          when "11" =>
+            rf(7) <= alu_to_r7
+        end case;
+      else
+        rf(to_integer(unsigned(rf_a3))) <= rf_d3;
+      end if;
     end if;
   end if;
 end process;
