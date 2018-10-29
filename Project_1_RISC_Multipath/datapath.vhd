@@ -47,9 +47,11 @@ Generic (NUM_BITS : INTEGER := 16);
     end component;
 
     component reg is
+    Generic (NUM_BITS : INTEGER := 16);
       port (EN, reset, CLK: in std_logic;
-            ip: in std_logic_vector(15 downto 0);
-            op: out std_logic_vector(15 downto 0));
+            ip: in std_logic_vector(NUM_BITS-1 downto 0);
+            op: out std_logic_vector(NUM_BITS-1 downto 0)
+    		  );
     end component;
 
     component priority_encoder is
@@ -69,7 +71,7 @@ Generic (NUM_BITS : INTEGER := 16);
 
     component RegFile is
       port (
-          CLK : in std_logic;
+          CLK,reset: in std_logic;
           rf_a1, rf_a2, rf_a3 : in std_logic_vector (2 downto 0);
           rf_d3 : in std_logic_vector(NUM_BITS - 1 downto 0);
           rf_d1, rf_d2 : out std_logic_vector(NUM_BITS - 1 downto 0);
@@ -140,6 +142,7 @@ Generic (NUM_BITS : INTEGER := 16);
 
       RF: RegFile port map(
       CLK=>CLK,
+		reset => reset,
       rf_a1=>rf_a1,
       rf_a2=>ir_op(8 downto 6),
       rf_a3=>rf_a3,
@@ -186,6 +189,8 @@ Generic (NUM_BITS : INTEGER := 16);
           alu_a <= t2_op;
         when "11"=>
           alu_a <= se9ir08_out;
+			when others =>
+				alu_a <= (others => '0');
       end case;
 
       case(alu_b_mux) is
@@ -213,8 +218,8 @@ Generic (NUM_BITS : INTEGER := 16);
           rf_a1 <= "111";
         when "10"=>
           rf_a1 <= t4_op;
-        when "11"=>
-          rf_a1 <= "111";
+			when others =>
+				rf_a1 <= (others => '0');
       end case;
 
       case(rf_a3_mux) is
@@ -237,7 +242,7 @@ Generic (NUM_BITS : INTEGER := 16);
           rf_d3 <= t1_op;
         when "01"=>
           rf_d3(15 downto 7) <= ir_op(8 downto 0);
-          rf_d3(7 downto 0) <= (others=>'0');
+          rf_d3(6 downto 0) <= (others=>'0');
         when "10"=>
           rf_d3 <= t3_op;
         when others =>
@@ -251,8 +256,8 @@ Generic (NUM_BITS : INTEGER := 16);
           mem_addr <= t1_op;
         when "10"=>
           mem_addr <= t2_op;
-        when "11"=>
-          mem_addr <= (others => '0');
+			when others =>
+				mem_addr <= (others => '0');
       end case;
 
       case(mem_d_mux) is
@@ -260,6 +265,8 @@ Generic (NUM_BITS : INTEGER := 16);
           mem_d_in <= t1_op;
         when '1'=>
           mem_d_in <= t3_op;
+			when others =>
+				mem_d_in <= (others => '0');
       end case;
 
       case(t1_mux) is
@@ -269,8 +276,8 @@ Generic (NUM_BITS : INTEGER := 16);
           t1_ip <= alu_out;
         when "10"=>
           t1_ip <= mem_d_out;
-        when "11"=>
-          t1_ip <= (others => '0');
+			when others =>
+				t1_ip <= (others => '0');
       end case;
 
       case(t2_mux) is
@@ -282,6 +289,8 @@ Generic (NUM_BITS : INTEGER := 16);
           t2_ip <= se9ir08_out;
         when "11"=>
           t2_ip <= t2_update;
+			when others =>
+				t2_ip <= (others => '0');
       end case;
 
       case(t3_mux) is
@@ -289,6 +298,8 @@ Generic (NUM_BITS : INTEGER := 16);
           t3_ip <= mem_d_out;
         when '1'=>
           t3_ip <= rf_d1;
+			when others =>
+				t3_ip <= (others => '0');			 
       end case;
 
     case(pc_mux) is

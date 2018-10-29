@@ -22,15 +22,15 @@ begin
 	 begin
     
     a_a(15 downto 0) := alu_a;
-    a_a(16) := alu_a(15);
+    a_a(16) := '0';
     a_b(15 downto 0) := alu_b;
-    a_b(16) := alu_b(15);
+    a_b(16) := '0';
 
 	 case (alu_op) is
 		when "00" =>
-			a_o := std_logic_vector(signed(a_a) + signed(a_b));
+			a_o := std_logic_vector(unsigned(a_a) + unsigned(a_b));
 		when "01" =>
-			a_o(15 downto 0) := std_logic_vector(signed(a_a(15 downto 0)) - signed(a_b(15 downto 0)));
+			a_o(15 downto 0) := std_logic_vector(unsigned(a_a(15 downto 0)) - unsigned(a_b(15 downto 0)));
 			a_o(16) := '0';
 		when "10" =>
 			a_o(15 downto 0) := a_a(15 downto 0) nand a_b(15 downto 0);

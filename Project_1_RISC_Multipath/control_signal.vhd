@@ -5,7 +5,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 
 entity control_signal is
-	port(X: in std_logic_vector(26 downto 0); 
+	port(X: in std_logic_vector(26 downto 0);
 	alu_op: out std_logic_vector(1 downto 0);
 	alu_a_mux: out std_logic_vector( 1 downto 0);
 	alu_b_mux: out std_logic_vector( 2 downto 0);
@@ -64,104 +64,64 @@ if(X(22 downto 18)="00001") then
 --------------------------------------------------------------------------------------State 2
 elsif(X(22 downto 18)="00010") then
 	temp_z_en<='1';
+	alu_op<="00";
+	alu_a_mux<="00";
+	alu_b_mux<="001";
+	r7_wr_mux<="01";
+	rf_a1_mux<= "00";
+	rf_a3_mux<= "010";
+	rf_d3_mux<= "00";
+	mem_write_bar<='1';
+	mem_a_mux<="00";
+	mem_d_mux<='1';
+	en_t3<= '0';
+	en_t4<= '0';
+	pc_en<= '0';
+	ir_en<= '0';
+	t3_mux<='0';
+	pc_mux<= "000";
+	en_t1<= '1';
+	en_t2<= '1';
+	flagc_en<='0';
+	flagz_en<= '0';
+	t1_mux<= "00";
+	t2_mux<= "00";
 	if((X(17 downto 14)="0000" or X(17 downto 14)="0010" ) and X(3 downto 1)="100" ) then
-		alu_op<="00";
-		alu_a_mux<="00";
-		alu_b_mux<="001";
 		rf_en<='1';
-		r7_wr_mux<="01";
-		rf_a1_mux<= "00";
-		rf_a3_mux<= "010";
-		rf_d3_mux<= "00";
-		mem_write_bar<='1';
-		mem_a_mux<="00";
-		mem_d_mux<='1';
-		en_t1<= '1';
-		en_t2<= '1';
-		en_t3<= '0';
-		en_t4<= '0';
-		pc_en<= '0';
-		ir_en<= '0';
-		flagc_en<='0';
-		flagz_en<= '0';
-		t1_mux<= "00";
-		t2_mux<= "00";
-		t3_mux<='0';
-		pc_mux<= "000";
 	elsif((X(17 downto 14)="0000" or X(17 downto 14)="0010" ) and X(3 downto 2)="01" and X(0) = '0') then
-		alu_op<="00";
-		alu_a_mux<="00";
-		alu_b_mux<="001";
 		rf_en<='1';
-		r7_wr_mux<="01";
-		rf_a1_mux<= "00";
-		rf_a3_mux<= "010";
-		rf_d3_mux<= "00";
-		mem_write_bar<='1';
-		mem_a_mux<="00";
-		mem_d_mux<='1';
-		en_t1<= '1';
-		en_t2<= '1';
-		en_t3<= '0';
-		en_t4<= '0';
-		pc_en<= '0';
-		ir_en<= '0';
-		flagc_en<='0';
-		flagz_en<= '0';
-		t1_mux<= "00";
-		t2_mux<= "00";
-		t3_mux<='0';
-		pc_mux<= "000";
 	else
-		alu_op<="00";
-		alu_a_mux<="00";
-		alu_b_mux<="001";
 		rf_en<='0';
-		r7_wr_mux<="01";
-		rf_a1_mux<= "00";
-		rf_a3_mux<= "010";
-		rf_d3_mux<= "00";
-		mem_write_bar<='1';
-		mem_a_mux<="00";
-		mem_d_mux<='1';
-		en_t1<= '1';
-		en_t2<= '1';
-		en_t3<= '0';
-		en_t4<= '0';
-		pc_en<= '0';
-		ir_en<= '0';
-		flagc_en<='0';
-		flagz_en<= '0';
-		t1_mux<= "00";
-		t2_mux<= "00";
-		t3_mux<='0';
-		pc_mux<= "000";
 	end if;
 -------------------------------------------------------------------------------------- State 3
 elsif(X(22 downto 18)="00011") then
 	temp_z_en<='1';
+	mem_write_bar<='1';
+	mem_a_mux<="00";
+	mem_d_mux<='1';
+	en_t3<= '0';
+	en_t4<= '0';
+	pc_en<= '0';
+	ir_en<= '0';
+	t3_mux<='0';
+	pc_mux<= "000";
+	rf_en<='0';
+	r7_wr_mux<="01";
+	rf_a1_mux<= "00";
+	rf_a3_mux<= "010";
+	rf_d3_mux<= "00";
 	if (X(17 downto 14) = "0000" or X(17 downto 14) = "0010") then
-		if(X(17 downto 14) = "0000") then
-			alu_op<="00";
-		else 	
-			alu_op<="10";
-		end if;
 		alu_a_mux<="01";
 		alu_b_mux<="010";
-		rf_en<='0';
-		r7_wr_mux<="01";
-		rf_a1_mux<= "00";
-		rf_a3_mux<= "010";
-		rf_d3_mux<= "00";
-		mem_write_bar<='1';
-		mem_a_mux<="00";
-		mem_d_mux<='1';
 		en_t1<= '1';
 		en_t2<= '0';
-		en_t3<= '0';
-		en_t4<= '0';
-		pc_en<= '0';
-		ir_en<= '0';
+		t1_mux<= "01";
+		t2_mux<= "00";
+		if(X(17 downto 14) = "0000") then
+			alu_op<="00";
+		else
+			alu_op<="10";
+		end if;
 		if(X(17 downto 14) = "0000") then
 			flagc_en<='1';
 			flagz_en<= '1';
@@ -169,187 +129,126 @@ elsif(X(22 downto 18)="00011") then
 			flagc_en<='0';
 			flagz_en<= '1';
 		end if;
-		t1_mux<= "01";
-		t2_mux<= "00";
-		t3_mux<='0';
-		pc_mux<= "000";
 	elsif(X(17 downto 14) = "0001") then
 		alu_op<="00";
 		alu_a_mux<="01";
 		alu_b_mux<="100";
-		rf_en<='0';
-		r7_wr_mux<="01";
-		rf_a1_mux<= "00";
-		rf_a3_mux<= "010";
-		rf_d3_mux<= "00";
-		mem_write_bar<='1';
-		mem_a_mux<="00";
-		mem_d_mux<='1';
 		en_t1<= '1';
 		en_t2<= '0';
-		en_t3<= '0';
-		en_t4<= '0';
-		pc_en<= '0';
-		ir_en<= '0';
 		flagc_en<='1';
 		flagz_en<= '1';
 		t1_mux<= "01";
 		t2_mux<= "00";
-		t3_mux<='0';
-		pc_mux<= "000";
 
 	elsif(X(17 downto 14) = "0100") then
 		alu_op<="00";
 		alu_a_mux<="10";
 		alu_b_mux<="100";
-		rf_en<='0';
-		r7_wr_mux<="01";
-		rf_a1_mux<= "00";
-		rf_a3_mux<= "010";
-		rf_d3_mux<= "00";
-		mem_write_bar<='1';
-		mem_a_mux<="00";
-		mem_d_mux<='1';
 		en_t1<= '1';
 		en_t2<= '0';
-		en_t3<= '0';
-		en_t4<= '0';
-		pc_en<= '0';
-		ir_en<= '0';
 		flagc_en<='0';
 		flagz_en<= '0';
 		t1_mux<= "01";
 		t2_mux<= "00";
-		t3_mux<='0';
-		pc_mux<= "000";
+
 	elsif(X(17 downto 14)="0101") then
 		alu_op<="00";
 		alu_a_mux<="10";
 		alu_b_mux<="100";
-		rf_en<='0';
-		r7_wr_mux<="01";
-		rf_a1_mux<= "00";
-		rf_a3_mux<= "010";
-		rf_d3_mux<= "00";
-		mem_write_bar<='1';
-		mem_a_mux<="00";
-		mem_d_mux<='1';
 		en_t1<= '0';
 		en_t2<= '1';
-		en_t3<= '0';
-		en_t4<= '0';
-		pc_en<= '0';
-		ir_en<= '0';
 		flagc_en<='0';
 		flagz_en<= '0';
 		t1_mux<= "00";
 		t2_mux<= "01";
-		t3_mux<='0';
-		pc_mux<= "000";
+
 	else
 		alu_op<="11";
+		alu_a_mux<="10";
+		alu_b_mux<="100";
+		en_t1<= '0';
+		en_t2<= '0';
+		flagc_en<='0';
+		flagz_en<= '0';
+		t1_mux<= "00";
+		t2_mux<= "01";
 	end if;
 ---------------------------------------------------------------------------------- State 4
 elsif(X(22 downto 18)="00100") then
 	temp_z_en<='1';
+	alu_op<="00";
+	alu_a_mux<="10";
+	alu_b_mux<="100";
+	mem_write_bar<='1';
+	mem_a_mux<="00";
+	mem_d_mux<='1';
+	en_t1<= '0';
+	en_t2<= '0';
+	en_t3<= '0';
+	en_t4<= '0';
+	ir_en<= '0';
+	flagc_en<='0';
+	flagz_en<= '0';
+	t1_mux<= "00";
+	t2_mux<= "01";
+	t3_mux<='0';
+
 	if (X(17 downto 14) = "0000" or X(17 downto 14) = "0010") then
-		alu_op<="00";
-		alu_a_mux<="10";
-		alu_b_mux<="100";
 		rf_en<='1';
+		rf_a1_mux<= "00";
+		rf_a3_mux<= "001";
+		rf_d3_mux<= "00";
+		pc_mux<= "010";
 		if(X(7 downto 5)="111") then
 		r7_wr_mux<="00";
 		else
 		r7_wr_mux<="01";
 		end if;
-		rf_a1_mux<= "00";
-		rf_a3_mux<= "001";
-		rf_d3_mux<= "00";
-		mem_write_bar<='1';
-		mem_a_mux<="00";
-		mem_d_mux<='1';
-		en_t1<= '0';
-		en_t2<= '0';
-		en_t3<= '0';
-		en_t4<= '0';
-		ir_en<= '0';
-		flagc_en<='0';
-		flagz_en<= '0';
-		t1_mux<= "00";
-		t2_mux<= "01";
-		t3_mux<='0';
-		pc_mux<= "010";
 		if(X(7 downto 5) = "111") then
 		pc_en<= '1';
-		else 
+		else
 		pc_en<= '0';
 		end if;
 	elsif(X(17 downto 14)="0001") then
-		alu_op<="00";
-		alu_a_mux<="10";
-		alu_b_mux<="100";
 		rf_en<='1';
+		rf_a1_mux<= "00";
+		rf_a3_mux<= "011";
+		rf_d3_mux<= "00";
+		pc_mux<= "010";
 		if(X(10 downto 8)="111") then
 		r7_wr_mux<="00";
 		else
 		r7_wr_mux<="01";
 		end if;
-		rf_a1_mux<= "00";
-		rf_a3_mux<= "011";
-		rf_d3_mux<= "00";
-		mem_write_bar<='1';
-		mem_a_mux<="00";
-		mem_d_mux<='1';
-		en_t1<= '0';
-		en_t2<= '0';
-		en_t3<= '0';
-		en_t4<= '0';
-		ir_en<= '0';
-		flagc_en<='0';
-		flagz_en<= '0';
-		t1_mux<= "00";
-		t2_mux<= "01";
-		t3_mux<='0';
-		pc_mux<= "010";
 		if(X(10 downto 8) = "111") then
 		pc_en<= '1';
-		else 
+		else
 		pc_en<= '0';
 		end if;
 	elsif(X(17 downto 14)="0011") then
-		alu_op<="00";
-		alu_a_mux<="10";
-		alu_b_mux<="100";
 		rf_en<='1';
+		rf_a1_mux<= "00";
+		rf_a3_mux<= "100";
+		rf_d3_mux<= "01";
+		pc_mux<= "101";
 		if(X(13 downto 11)="111") then
 		r7_wr_mux<="00";
 		else
 		r7_wr_mux<="01";
 		end if;
-		rf_a1_mux<= "00";
-		rf_a3_mux<= "100";
-		rf_d3_mux<= "01";
-		mem_write_bar<='1';
-		mem_a_mux<="00";
-		mem_d_mux<='1';
-		en_t1<= '0';
-		en_t2<= '0';
-		en_t3<= '0';
-		en_t4<= '0';
-		ir_en<= '0';
-		flagc_en<='0';
-		flagz_en<= '0';
-		t1_mux<= "00";
-		t2_mux<= "01";
-		t3_mux<='0';
-		pc_mux<= "101";
 		if(X(13 downto 11) = "111") then
 		pc_en<= '1';
-		else 
+		else
 		pc_en<= '0';
 		end if;
 	else
-		alu_op<="11";
+		rf_en<='0';
+		rf_a1_mux<= "00";
+		rf_a3_mux<= "100";
+		rf_d3_mux<= "01";
+		pc_mux<= "101";
+		r7_wr_mux<="00";
+		pc_en<= '0';
 	end if;
 
 ------------------------------------------------------------------------------- State 6
@@ -403,7 +302,7 @@ elsif(X(22 downto 18) = "00111") then
 		t1_mux<= "10";
 		t2_mux<= "10";
 		t3_mux<='0';
-		pc_mux<= "000";	
+		pc_mux<= "000";
 -------------------------------------------------------------------------------State 8
 elsif(X(22 downto 18) = "01000") then
 		temp_z_en<='1';
@@ -435,7 +334,7 @@ elsif(X(22 downto 18) = "01000") then
 		pc_mux<= "010";
 		if(X(13 downto 11) = "111") then
 		pc_en<= '1';
-		else 
+		else
 		pc_en<= '0';
 		end if;
 -----------------------------------------------------------------State 9
@@ -738,7 +637,30 @@ elsif(X(22 downto 18)="10011") then
 		t3_mux<='1';
 		pc_mux<= "011";
 else
-	alu_op<="11";
+	temp_z_en<='1';
+	alu_op<="00";
+	alu_a_mux<="11";
+	alu_b_mux<="011";
+	rf_en<='1';
+	r7_wr_mux<="10";
+	rf_a1_mux<= "01";
+	rf_a3_mux<= "100";
+	rf_d3_mux<= "10";
+	mem_write_bar<='1';
+	mem_a_mux<="01";
+	mem_d_mux<='1';
+	en_t1<= '0';
+	en_t2<= '0';
+	en_t3<= '0';
+	en_t4<= '0';
+	pc_en<= '1';
+	ir_en<= '0';
+	flagc_en<='0';
+	flagz_en<= '0';
+	t1_mux<= "01";
+	t2_mux<= "11";
+	t3_mux<='1';
+	pc_mux<= "011";
 end if;
 
 end process;
