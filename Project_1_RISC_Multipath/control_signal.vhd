@@ -653,7 +653,7 @@ else
 	en_t2<= '0';
 	en_t3<= '0';
 	en_t4<= '0';
-	pc_en<= '1';
+	pc_en<= '0';
 	ir_en<= '0';
 	flagc_en<='0';
 	flagz_en<= '0';
