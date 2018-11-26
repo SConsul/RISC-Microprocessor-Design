@@ -158,12 +158,12 @@ end SignedExtender;
 ---------------------------------------------------------------
 entity EX_stage is 
 port (OR_reg_op: in std_logic_vector(99 downto 0);
-	 flag_z_mux_control,load_flag_z: in std_logic;
+	 RF_write_out,flagc_write_out,flagz_write_out: in std_logic;
 	 PE1_op: out std_logic_vector (7 downto 0);
-	 nullify_control_ex,reset,clock:in std_logic;
+	 nullify_control_ex,reset,clock,authentic_c,authentic_z:in std_logic;
 	 EX_reg_op: out std_logic_vector(93 downto 0);
 	 alu2_out,PCtoR7: out std_logic_vector(15 downto 0);
-	 nullify_ex: out std_logic;
+	 nullify_ex: out std_logic
 
 );
 end entity;
@@ -220,10 +220,9 @@ port (
 end component SE6_ex;
 
 signal alu_a_ip,alu2_out_sig: std_logic_vector,se6_ex_op: std_logic_vector(15 downto 0);
-signal alu_flagz_sig, alu_flagc_sig,flagz_mux_op: std_logic;
+signal alu_flagz_sig, alu_flagc_sig: std_logic;
 signal PE1_addr_sig: std_logic_vector(2 downto 0);
 signal EX_reg_op_sig: std_logic_vector(99 downto 0);
-
 begin
 
 a: ALU_2 port map(alu_op=>OR_reg_op(17 downto 16),alu_a=>alu_a_ip,alu_b=>OR_reg_op(51 downto 36),alu_c=>alu_flagc_sig,alu_z=>alu_flagz_sig,alu_out=>alu2_out_sig );
@@ -232,7 +231,7 @@ b: priority_encoder1 port map (ip=>OR_reg_op(7 downto 0),op_addr=>PE1_addr_sig,u
 
 c: SE6_ex port map (ip=>OR_reg_op(73 downto 68),op=>se6_ex_op);
 
-d: EX_interface_reg port map(EN=>'1',CLK=>clock,reset=>reset,ip(93 downto 78)=>OR_reg_op(99 downto 84),ip(77 downto 62)=>OR_reg_op(83 downto 68),ip(53 downto 38)=>alu2_out_sig,ip(37 downto 22)=>OR_reg_op(67 downto 52),ip(21 downto 6)=>OR_reg_op(51 downto 36),ip(5 downto 3)=>PE1_addr_sig,ip(2)=>alu_flagc_sig,ip(1)=>flagz_mux_op,ip(0)=>nullify_control_ex,ip(61 downto 60)=>OR_reg_op(19 downto 18),ip(59 downto 54)=>OR_reg_op(14 downto 9),op=>EX_reg_op_sig);
+d: EX_interface_reg port map(EN=>'1',CLK=>clock,reset=>reset,ip(93 downto 78)=>OR_reg_op(99 downto 84),ip(77 downto 62)=>OR_reg_op(83 downto 68),ip(53 downto 38)=>alu2_out_sig,ip(37 downto 22)=>OR_reg_op(67 downto 52),ip(21 downto 6)=>OR_reg_op(51 downto 36),ip(5 downto 3)=>PE1_addr_sig,ip(2)=>alu_flagc_sig,ip(1)=>alu_flagz_sig,ip(0)=>nullify_control_ex,ip(61)=>(RF_write_out and not(nullify_control_ex)),ip(60)=>OR_reg_op(18),ip(59 downto 56)=>OR_reg_op(14 downto 11),ip(55)=>(flagc_write_out and not(nullify_control_ex)),ip(54)=>(flagz_write_out and not(nullify_control_ex)),op=>EX_reg_op_sig);
 
 PCtoR7 <= EX_reg_op_sig(93 downto 78);
 nullify_ex <= EX_reg_op_sig(0);
@@ -247,14 +246,6 @@ else
 end if;
 end process;
 
-process(flag_z_mux_control)
-begin
-if(flag_z_mux_control = '1') then
-	flagz_mux_op<=alu_flagz_sig;
-else
-	flagz_mux_op<=load_flag_z;
-end if;
-end process;
 end Behave;	
 
 
