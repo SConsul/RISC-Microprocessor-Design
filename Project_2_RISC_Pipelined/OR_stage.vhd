@@ -273,12 +273,13 @@ use ieee.numeric_std.all;
 
 entity OR_stage is
     port(ID_reg_op: in std_logic_vector (51 downto 0);
-    PC_ex,alu2_out_mem,memd_out,PC_mem,left_shifted: in std_logic_vector (15 downto 0);
+    PC_ex,alu2_out_mem,memd_out,PC_mem,left_shifted,alu2_forward,memd_forward,EX_reg_op_ALU2,mem_reg_op_ALU2,mem_reg_memd: in std_logic_vector (15 downto 0);
     memi35_mem,memi911_mem,PE1_dest: in std_logic_vector (2 downto 0);
     nullify_ex,clock,reset,mem_rf_en,nullify_control_OR,PE1_mux_control: in std_logic;
     PE1_ip: in std_logic_vector (7 downto 0); 
     OR_reg_op: out std_logic_vector (99 downto 0);
     PE2_op: out std_logic_vector (7 downto 0);
+    RF_d1_mux_control,RF_d2_mux_control: std_logic_vector(2 downto 0);
     ALU3_op,RF_d2_or:out std_logic_vector (15 downto 0)
     );
 end entity; 
@@ -342,7 +343,7 @@ component ALU_3 is
       alu_out: out std_logic_vector(15 downto 0));
 end component;
 
-signal SE6_op,SE9_op,SE_mux_op,RF_D3_sig,alu3_op,R7_op,rf_d1_sig,rf_d2_sig: std_logic_vector (15 downto 0);
+signal SE6_op,SE9_op,SE_mux_op,RF_D3_sig,alu3_op,R7_op,rf_d1_sig,rf_d2_sig,rf_d1_mux_sig,rf_d2_mux_sig: std_logic_vector (15 downto 0);
 signal RF_a3_sig,RF_a2_sig,op_PE2: std_logic_vector (2 downto 0);
 signal PE1_mux_op: std_logic_vector(7 downto 0);
 
@@ -354,7 +355,7 @@ c: ALU_3 port map (alu_a=>SE_mux_op,alu_b=>ID_reg_op(51 downto 36),alu_out=>alu3
 d: RegFile port map(CLK => clock, reset=>reset,rf_a1=>ID_reg_op(31 downto 29),rf_a2 => RF_a2_sig, rf_a3 =>RF_a3_sig,rf_d3=>RF_d3_sig,rf_d1=>rf_d1_sig,rf_d2=>rf_d2_sig,rf_wr =>mem_rf_en );
 e: R7 port map(EN=>not(nullify_ex),ip=>PC_ex,op=>R7_op);
 f: priority_encoder2 port map(ip=>ID_reg_op(7 downto 0), op_addr=>op_PE2, update=> PE2_op);
-g: OR_interface_reg port map(EN=>'1',reset=>reset,CLK=>clock,ip(99 downto 84)=>ID_reg_op(51 downto 36),ip(83 downto 68)=>ID_reg_op(35 downto 20),ip(67 downto 52)=>rf_d1_sig,ip(51 downto 34)=>rf_d2_sig,ip(35 downto 20)=>alu3_op,ip(19 downto 9)=>ID_reg_op(19 downto 9),ip(8)=>nullify_control_OR,ip(7 downto 0)=>PE1_mux_op);
+g: OR_interface_reg port map(EN=>'1',reset=>reset,CLK=>clock,ip(99 downto 84)=>ID_reg_op(51 downto 36),ip(83 downto 68)=>ID_reg_op(35 downto 20),ip(67 downto 52)=>rf_d1_mux_sig,ip(51 downto 34)=>rf_d2_mux_sig,ip(35 downto 20)=>alu3_op,ip(19 downto 9)=>ID_reg_op(19 downto 9),ip(8)=>nullify_control_OR,ip(7 downto 0)=>PE1_mux_op);
 
 RF_d2_or<=rf_d2_sig;
 process(ID_reg_op)
@@ -412,4 +413,43 @@ process( PE1_ip,PE1_mux_control);
       PE1_mux_op<=ID_reg_op(27 downto 20);
     end if;
   end process;
+
+process( RF_d1_mux_control,alu2_forward,memd_forward,rf_d1_sig)
+begin
+if(RF_d1_mux_control = "000") then
+  rf_d1_mux_sig<=rf_d1_sig;
+elsif(RF_d1_mux_control = "001") then
+  rf_d1_mux_sig<=alu2_forward;
+elsif(RF_d1_mux_control = "010") then
+  rf_d1_mux_sig<=memd_forward;
+elsif(RF_d1_mux_control = "011") then
+  rf_d1_mux_sig<=EX_reg_op_ALU2;
+elsif(RF_d1_mux_control = "100") then
+  rf_d1_mux_sig<=mem_reg_op_ALU2;
+elsif(RF_d1_mux_control = "101") then
+  rf_d1_mux_sig<=mem_reg_memd;
+else
+  rf_d1_mux_sig<=rf_d1_sig;
+end if;
+end process;
+
+process( RF_d2_mux_control,alu2_forward,memd_forward,rf_d2_sig)
+begin
+if(RF_d2_mux_control = "000") then
+  rf_d2_mux_sig<=rf_d2_sig;
+elsif(RF_d2_mux_control = "001") then
+  rf_d2_mux_sig<=alu2_forward;
+elsif(RF_d2_mux_control = "010") then
+  rf_d2_mux_sig<=memd_forward;
+elsif(RF_d2_mux_control = "011") then
+  rf_d2_mux_sig<=EX_reg_op_ALU2;
+elsif(RF_d2_mux_control = "100") then
+  rf_d2_mux_sig<=mem_reg_op_ALU2;
+elsif(RF_d2_mux_control = "101") then
+  rf_d2_mux_sig<=mem_reg_memd;
+else
+  rf_d2_mux_sig<=rf_d2_sig;
+end if;
+end process;
+
 end Behave;
