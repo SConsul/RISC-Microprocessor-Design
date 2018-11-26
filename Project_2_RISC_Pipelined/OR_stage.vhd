@@ -273,13 +273,13 @@ use ieee.numeric_std.all;
 
 entity OR_stage is
     port(ID_reg_op: in std_logic_vector (51 downto 0);
-    PC_ex,alu2_out_mem,memd_out,PC_mem,left_shifted,alu2_forward,memd_forward,EX_reg_op_ALU2,mem_reg_op_ALU2,mem_reg_memd: in std_logic_vector (15 downto 0);
+    PC_ex,alu2_out_mem,memd_out,PC_mem,left_shifted,alu2_forward,memd_forward,EX_reg_op_ALU2,mem_reg_op_ALU2,mem_reg_memd,instr08_OR,instr08_EX,instr08_mem: in std_logic_vector (15 downto 0);
     memi35_mem,memi911_mem,PE1_dest: in std_logic_vector (2 downto 0);
     nullify_ex,clock,reset,mem_rf_en,nullify_control_OR,PE1_mux_control: in std_logic;
     PE1_ip: in std_logic_vector (7 downto 0); 
     OR_reg_op: out std_logic_vector (99 downto 0);
     PE2_op: out std_logic_vector (7 downto 0);
-    RF_d1_mux_control,RF_d2_mux_control: std_logic_vector(2 downto 0);
+    RF_d1_mux_control,RF_d2_mux_control: std_logic_vector(3 downto 0);
     ALU3_op,RF_d2_or:out std_logic_vector (15 downto 0)
     );
 end entity; 
@@ -416,18 +416,24 @@ process( PE1_ip,PE1_mux_control);
 
 process( RF_d1_mux_control,alu2_forward,memd_forward,rf_d1_sig)
 begin
-if(RF_d1_mux_control = "000") then
+if(RF_d1_mux_control = "0000") then
   rf_d1_mux_sig<=rf_d1_sig;
-elsif(RF_d1_mux_control = "001") then
+elsif(RF_d1_mux_control = "0001") then
   rf_d1_mux_sig<=alu2_forward;
-elsif(RF_d1_mux_control = "010") then
+elsif(RF_d1_mux_control = "0010") then
   rf_d1_mux_sig<=memd_forward;
-elsif(RF_d1_mux_control = "011") then
+elsif(RF_d1_mux_control = "0011") then
   rf_d1_mux_sig<=EX_reg_op_ALU2;
-elsif(RF_d1_mux_control = "100") then
+elsif(RF_d1_mux_control = "0100") then
   rf_d1_mux_sig<=mem_reg_op_ALU2;
-elsif(RF_d1_mux_control = "101") then
+elsif(RF_d1_mux_control = "0101") then
   rf_d1_mux_sig<=mem_reg_memd;
+elsif(RF_d1_mux_control = "0110") then
+  rf_d1_mux_sig<=instr08_OR;
+elsif(RF_d1_mux_control = "0111") then
+  rf_d1_mux_sig<=instr08_EX;
+elsif(RF_d1_mux_control = "1000") then
+  rf_d1_mux_sig<=instr08_mem
 else
   rf_d1_mux_sig<=rf_d1_sig;
 end if;
@@ -435,18 +441,24 @@ end process;
 
 process( RF_d2_mux_control,alu2_forward,memd_forward,rf_d2_sig)
 begin
-if(RF_d2_mux_control = "000") then
+if(RF_d2_mux_control = "0000") then
   rf_d2_mux_sig<=rf_d2_sig;
-elsif(RF_d2_mux_control = "001") then
+elsif(RF_d2_mux_control = "0001") then
   rf_d2_mux_sig<=alu2_forward;
-elsif(RF_d2_mux_control = "010") then
+elsif(RF_d2_mux_control = "0010") then
   rf_d2_mux_sig<=memd_forward;
-elsif(RF_d2_mux_control = "011") then
+elsif(RF_d2_mux_control = "0011") then
   rf_d2_mux_sig<=EX_reg_op_ALU2;
-elsif(RF_d2_mux_control = "100") then
+elsif(RF_d2_mux_control = "0100") then
   rf_d2_mux_sig<=mem_reg_op_ALU2;
-elsif(RF_d2_mux_control = "101") then
+elsif(RF_d2_mux_control = "0101") then
   rf_d2_mux_sig<=mem_reg_memd;
+ elsif(RF_d2_mux_control = "0110") then
+  rf_d2_mux_sig<=instr08_OR;
+elsif(RF_d2_mux_control = "0111") then
+  rf_d2_mux_sig<=instr08_EX;
+elsif(RF_d2_mux_control = "1000") then
+  rf_d2_mux_sig<=instr08_mem 
 else
   rf_d2_mux_sig<=rf_d2_sig;
 end if;
