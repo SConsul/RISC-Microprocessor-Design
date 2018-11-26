@@ -7,6 +7,7 @@ port(
 RS_id1,RD_or,RD_ex,RD_mem: in std_logic_vector(2 downto 0);
 ID_opcode: in std_logic_vector(3 downto 0);
 EX_opcode,OR_opcode,mem_opcode: in std_logic_vector(5 downto 0);
+PE1_op,PE2_stored: in std_logic_vector(7 downto 0);
 cflag_ex,cflag_mem,zflag_ex,zflag_mem,nullify_or,nullify_id,nullify_ex,nullify_mem,user_cflag,user_zflag: in std_logic;
 RF_d1_mux_control: out std_logic_vector(3 downto 0)
 );
@@ -17,7 +18,11 @@ architecture Behave of RF_d1_control is
 begin
 process(RS_id1,RD_or,RD_ex,RD_mem,ID_opcode,EX_opcode,OR_opcode,mem_opcode,cflag_ex,cflag_mem,zflag_ex,zflag_mem,nullify_or,nullify_id,nullify_ex,nullify_mem)
 
-if(((ID_opcode = "0000") or (ID_opcode = "0001") or (ID_opcode = "0010") or (ID_opcode = "0101") or (ID_opcode = "0111") ) and (nullify_id  = '0')) then
+
+if((OR_opcode(5 downto 2) = "0110" and nullify_or ='0' and PE1_op /= "00000000") or (OR_opcode(5 downto 2) = "0111" and nullify_or ='0' and PE2_stored /= "00000000")) then
+	RF_d1_mux_control<="0001";
+
+elsif(((ID_opcode = "0000") or (ID_opcode = "0001") or (ID_opcode = "0010") or (ID_opcode = "0101") or (ID_opcode = "0111") ) and (nullify_id  = '0')) then
 	if((((OR_opcode(5 downto 2) = "0000") or (OR_opcode(5 downto 2) = "0001") or (OR_opcode(5 downto 2) = "0010") or (OR_opcode(5 downto 2) = "0011")) and (nullify_or  = '0')) and (RS_id1 = RD_or)) then
 
 		if((OR_opcode(1 downto 0) = "00") or (OR_opcode(5 downto 2) = "0001")) then
