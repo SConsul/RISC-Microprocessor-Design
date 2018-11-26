@@ -12,7 +12,7 @@ architecture mem of memory_instruction is
   type RAM_array is array (0 to 2**4-1) of std_logic_vector (15 downto 0);
 	signal RAM : RAM_array:= (X"3115",X"32C7",X"0050",X"039A",others=>X"0000");
 begin
-  process(clk, mem_write_bar, data_in, address, RAM)
+  process(clk,data_in, address, RAM)
     begin
     if rising_edge(clk) then
       data_out <= RAM(to_integer(unsigned(address)));
@@ -96,10 +96,10 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 entity IF_stage is
   port(reset,clock,validate_control,PC_en_control: in std_logic;
-  PC_control: in std_logic_vector(2 downto 0);--gotta prioritize this!
+  PC_control: in std_logic_vector(2 downto 0);
   IF_reg_op : out std_logic_vector (32 downto 0);
-  alu3_out,alu2_out,memd_out,RF_d2,memid_08:in std_logic_vector(15 downto 0);
-  )
+  alu3_out,alu2_out,memd_out,RF_d2,memid_08:in std_logic_vector(15 downto 0)
+  );
 end entity;
 architecture arc of IF_stage is
 

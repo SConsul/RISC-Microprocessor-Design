@@ -34,7 +34,8 @@ entity ID_stage is
   PE2_ip: std_logic_vector (7 downto 0);
   IF_reg_op :in std_logic_vector(32 downto 0);
   ID_reg_op : out std_logic_vector (51 downto 0);
-  )
+  mem_id_08: out std_logic_vector (15 downto 0)
+  );
 end entity;
 architecture Behave of ID_stage is
 
@@ -52,6 +53,9 @@ signal PE2_mux_op: std_logic_vector(7 downto 0);
 
 begin
 a: ID_interface_reg(EN=>'1',reset=>reset,CLK=>clock,ip(51 downto 20)=>IF_reg_op(32 downto 1),ip(8)=>(nullify_ID_control or not(IF_reg_op(0))),ip(7 downto 0)=>PE2_mux_op,ip(19)=>RF_enable,ip(18)=>mem_write,ip(17 downto 16)=>ALU2_op,ip(15)=>ALU2_a_mux,ip(14 downto 13)=>RF_a3_mux,ip(12 downto 11)=>RF_D3_mux,op=>ID_reg_op,ip(10)=>flagc_en,ip(9)=>flagz_en);
+
+mem_id_08(15 downto 7)<=IF_reg_op(9 downto 1);
+mem_id_08(6 downto 0)<="0000000";
 
 process(IF_reg_op)
 	begin
@@ -198,7 +202,7 @@ process(IF_reg_op)
 			PE2_mux_op<=IF_reg_op(8 downto 1);
 		end if;
 	end process;
-	end Behave;
+end Behave;
 
 
 

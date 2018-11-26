@@ -223,6 +223,7 @@ signal alu_a_ip,alu2_out_sig: std_logic_vector,se6_ex_op: std_logic_vector(15 do
 signal alu_flagz_sig, alu_flagc_sig,flagz_mux_op: std_logic;
 signal PE1_addr_sig: std_logic_vector(2 downto 0);
 signal EX_reg_op_sig: std_logic_vector(99 downto 0);
+
 begin
 
 a: ALU_2 port map(alu_op=>OR_reg_op(17 downto 16),alu_a=>alu_a_ip,alu_b=>OR_reg_op(51 downto 36),alu_c=>alu_flagc_sig,alu_z=>alu_flagz_sig,alu_out=>alu2_out_sig );
