@@ -4,7 +4,7 @@ use ieee.numeric_std.all;
 
 entity ID_interface_reg is
 Generic (NUM_BITS : INTEGER := 52);
-  port (EN, reset, CLK: in std_logic;
+  port (EN,EN_8bits, reset, CLK: in std_logic;
         ip: in std_logic_vector(NUM_BITS-1 downto 0);
         op: out std_logic_vector(NUM_BITS-1 downto 0)
       );
@@ -17,12 +17,13 @@ begin
   if CLK'event and CLK = '1' then
     if reset = '1' then
       op(NUM_BITS-1 downto 0) <= (others=>'0');
-    elsif EN = '1' then
+    elsif EN = '1' and EN_8bits = '1' then
       op <= ip;
+    elsif EN = '0' and EN_8bits = '1' then
+      op(7 downto 0)<=ip(7 downto 0);		
     end if;
   end if;
 end process;
-
 end reg_arch;
 -------------------------------------------------------------------------
 library ieee;
@@ -41,7 +42,7 @@ architecture Behave of ID_stage is
 
 component ID_interface_reg is
 Generic (NUM_BITS : INTEGER := 52);
-  port (EN, reset, CLK: in std_logic;
+  port (EN, reset, CLK,EN_id_control,EN_8bits_control: in std_logic;
         ip: in std_logic_vector(NUM_BITS-1 downto 0);
         op: out std_logic_vector(NUM_BITS-1 downto 0)
       );
@@ -52,7 +53,7 @@ signal ALU2_op,RF_D3_mux,RF_a3_mux: std_logic_vector(1 downto 0);
 signal PE2_mux_op: std_logic_vector(7 downto 0);
 
 begin
-a: ID_interface_reg(EN=>'1',reset=>reset,CLK=>clock,ip(51 downto 20)=>IF_reg_op(32 downto 1),ip(8)=>(nullify_ID_control or not(IF_reg_op(0))),ip(7 downto 0)=>PE2_mux_op,ip(19)=>RF_enable,ip(18)=>mem_write,ip(17 downto 16)=>ALU2_op,ip(15)=>ALU2_a_mux,ip(14 downto 13)=>RF_a3_mux,ip(12 downto 11)=>RF_D3_mux,op=>ID_reg_op,ip(10)=>flagc_en,ip(9)=>flagz_en);
+a: ID_interface_reg(EN=>EN_id_control,EN_8bits=>EN_8bits_control,reset=>reset,CLK=>clock,ip(51 downto 20)=>IF_reg_op(32 downto 1),ip(8)=>(nullify_ID_control or not(IF_reg_op(0))),ip(7 downto 0)=>PE2_mux_op,ip(19)=>(RF_enable and IF_reg_op(0)),ip(18)=>(mem_write and and IF_reg_op(0)),ip(17 downto 16)=>ALU2_op,ip(15)=>ALU2_a_mux,ip(14 downto 13)=>RF_a3_mux,ip(12 downto 11)=>RF_D3_mux,op=>ID_reg_op,ip(10)=>(flagc_en and IF_reg_op(0)),ip(9)=>(flagz_en and IF_reg_op(0)));
 
 mem_id_08(15 downto 7)<=IF_reg_op(9 downto 1);
 mem_id_08(6 downto 0)<="0000000";
@@ -63,7 +64,7 @@ process(IF_reg_op)
 		RF_enable<='1';
 		mem_write<='0';
 		ALU2_a_mux<='0';
-		RF_a3_mux<"00";
+		RF_a3_mux<="00";
 		ALU2_op<="00";
 		RF_D3_mux<="01";
 		flagc_en<='1';
@@ -73,7 +74,7 @@ process(IF_reg_op)
 		RF_enable<='1';
 		mem_write<='0';
 		ALU2_a_mux<='0';
-		RF_a3_mux<"00";
+		RF_a3_mux<="00";
 		ALU2_op<="01";
 		RF_D3_mux<="01";
 		flagc_en<='0';
@@ -83,7 +84,7 @@ process(IF_reg_op)
 		RF_enable<='1';
 		mem_write<='0';
 		ALU2_a_mux<='1';
-		RF_a3_mux<"01";
+		RF_a3_mux<="01";
 		ALU2_op<="00";
 		RF_D3_mux<="01";
 		flagc_en<='1';
@@ -93,7 +94,7 @@ process(IF_reg_op)
 		RF_enable<='1';
 		mem_write<='0';
 		ALU2_a_mux<='0';
-		RF_a3_mux<"00";
+		RF_a3_mux<="00";
 		ALU2_op<="01";
 		RF_D3_mux<="01";
 		flagc_en<='0';
@@ -104,7 +105,7 @@ process(IF_reg_op)
 		RF_enable<='1';
 		mem_write<='0';
 		ALU2_a_mux<='0';
-		RF_a3_mux<"01";
+		RF_a3_mux<="01";
 		ALU2_op<="01";
 		RF_D3_mux<="00";
 		flagc_en<='0';
@@ -114,7 +115,7 @@ process(IF_reg_op)
 		RF_enable<='1';
 		mem_write<='0';
 		ALU2_a_mux<='1';
-		RF_a3_mux<"01";
+		RF_a3_mux<="01";
 		ALU2_op<="00";
 		RF_D3_mux<="11";
 		flagc_en<='0';
@@ -124,7 +125,7 @@ process(IF_reg_op)
 		RF_enable<='0';
 		mem_write<='1';
 		ALU2_a_mux<='1';
-		RF_a3_mux<"01";
+		RF_a3_mux<="01";
 		ALU2_op<="00";
 		RF_D3_mux<="11";
 		flagc_en<='0';
@@ -134,7 +135,7 @@ process(IF_reg_op)
 		RF_enable<='1';
 		mem_write<='0';
 		ALU2_a_mux<='0';
-		RF_a3_mux<"10";
+		RF_a3_mux<="10";
 		ALU2_op<="11";
 		RF_D3_mux<="11";
 		flagc_en<='0';
@@ -145,7 +146,7 @@ process(IF_reg_op)
 		RF_enable<='0';
 		mem_write<='1';
 		ALU2_a_mux<='0';
-		RF_a3_mux<"10";
+		RF_a3_mux<="10";
 		ALU2_op<="11";
 		RF_D3_mux<="11";
 		flagc_en<='0';
@@ -155,7 +156,7 @@ process(IF_reg_op)
 		RF_enable<='0';
 		mem_write<='0';
 		ALU2_a_mux<='0';
-		RF_a3_mux<"10";
+		RF_a3_mux<="10";
 		ALU2_op<="10";
 		RF_D3_mux<="11";
 		flagc_en<='0';
@@ -166,7 +167,7 @@ process(IF_reg_op)
 		RF_enable<='1';
 		mem_write<='0';
 		ALU2_a_mux<='0';
-		RF_a3_mux<"01";
+		RF_a3_mux<="01";
 		ALU2_op<="00";
 		RF_D3_mux<="10";
 		flagc_en<='0';
@@ -177,7 +178,7 @@ process(IF_reg_op)
 		RF_enable<='1';
 		mem_write<='0';
 		ALU2_a_mux<='0';
-		RF_a3_mux<"01";
+		RF_a3_mux<="01";
 		ALU2_op<="00";
 		RF_D3_mux<="10";
 		flagc_en<='0';
@@ -187,7 +188,7 @@ process(IF_reg_op)
 		RF_enable<='0';
 		mem_write<='0';
 		ALU2_a_mux<='0';
-		RF_a3_mux<"01";
+		RF_a3_mux<="01";
 		ALU2_op<="00";
 		RF_D3_mux<="10";
 		flagc_en<='0';
@@ -195,7 +196,8 @@ process(IF_reg_op)
 
 	end if;
 	end process;
-	process( PE2_ip,PE2_mux_control);
+	process( PE2_ip,PE2_mux_control)
+	begin
 		if(PE2_mux_control = '1') then
 			PE2_mux_op<=PE2_ip;
 		else
