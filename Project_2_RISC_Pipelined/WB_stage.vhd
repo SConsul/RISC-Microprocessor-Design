@@ -5,8 +5,8 @@ use ieee.numeric_std.all;
 entity user_flagz is
 Generic (NUM_BITS : INTEGER :=1);
   port (EN, reset, CLK: in std_logic;
-        ip: in std_logic;
-        op: out std_logic
+        ip: in std_logic_vector(NUM_BITS-1 downto 0);
+        op: out std_logic_vector(NUM_BITS-1 downto 0)
       );
 end entity;
 
@@ -16,7 +16,7 @@ reg1 : process(CLK, EN, ip)
 begin
   if CLK'event and CLK = '1' then
     if reset = '1' then
-      op <= '0';
+      op(NUM_BITS-1 downto 0) <= (others=>'0');
     elsif EN = '1' then
       op <= ip;
     end if;
@@ -34,8 +34,8 @@ use ieee.numeric_std.all;
 entity user_flagc is
 Generic (NUM_BITS : INTEGER :=1);
   port (EN, reset, CLK: in std_logic;
-        ip: in std_logic;
-        op: out std_logic
+        ip: in std_logic_vector(NUM_BITS-1 downto 0);
+        op: out std_logic_vector(NUM_BITS-1 downto 0)
       );
 end entity;
 
@@ -45,7 +45,7 @@ reg1 : process(CLK, EN, ip)
 begin
   if CLK'event and CLK = '1' then
     if reset = '1' then
-      op <= '0';
+      op(NUM_BITS-1 downto 0) <= (others=>'0');
     elsif EN = '1' then
       op <= ip;
     end if;
@@ -65,7 +65,7 @@ port(clock,reset:in std_logic;
 mem_reg_op:in std_logic_vector(76 downto 0);
 alu2_out,memd_out,PC_mem,left_shifted:out std_logic_vector(15 downto 0);
 memi_35,memi_911,PE1_dest: out std_logic_vector(2 downto 0);
-memrf_en:out std_logic
+memrf_en,user_cflag,user_zflag:out std_logic
 );
 
 end entity;
@@ -75,23 +75,23 @@ architecture Behave of WB_stage is
 component user_flagz is
 Generic (NUM_BITS : INTEGER :=1);
   port (EN, reset, CLK: in std_logic;
-        ip: in std_logic;
-        op: out std_logic
+        ip: in std_logic_vector(NUM_BITS-1 downto 0);
+        op: out std_logic_vector(NUM_BITS-1 downto 0)
       );
 end component;
 
 component user_flagc is
 Generic (NUM_BITS : INTEGER :=1);
   port (EN, reset, CLK: in std_logic;
-        ip: in std_logic;
-        op: out std_logic
+        ip: in std_logic_vector(NUM_BITS-1 downto 0);
+        op: out std_logic_vector(NUM_BITS-1 downto 0)
       );
 end component;
 
-begin
+begin:
 
-a: user_flagz port map(EN=>mem_reg_op(6),CLK=>clock,reset=>reset,ip=>mem_reg_op(1));
-b: user_flagc port map(EN=>mem_reg_op(7),CLK=>clock,reset=>reset,ip=>mem_reg_op(2));
+a: user_flag_z port map(EN=>mem_reg_op(6),CLK=>clock,reset=>reset,ip=>mem_reg_op(1),op=>user_zflag);
+b: user_flag_c port map(EN=>mem_reg_op(7),CLK=>clock,reset=>reset,ip=>mem_reg_op(2),op=>user_cflag);
 left_shifted(15 downto 7)<=mem_reg_op(53 downto 45);
 left_shifted(6 downto 0)<="0000000";
 alu2_out<=mem_reg_op(28 downto 13);
