@@ -334,7 +334,7 @@ i:PE2_mux_control port map(
 					nullified_id=>ID_reg_op_sig(8),
 					PE2_mux_controller=>PE2_mux_control_sig
 );
-
+--CHECK THIS! (EDIT: added outputs authentis_c_op,authentic_z_op)
 j:write_control port map(
 					opcode_mem=>mem_opcode_sig,
 					opcode_EX=>EX_opcode_sig,
@@ -473,11 +473,12 @@ end process;
 
 process(EX_reg_op_sig)
 begin
+-- CHECK THIS!! 
   case(EX_reg_op_sig(77 downto 74)) is
     when "0000" =>
-      RD_ex_sig <= EX_reg_op_sig(68 downto 65);
+      RD_ex_sig <= EX_reg_op_sig(67 downto 65); 
     when "0010" =>
-      RD_ex_sig <= EX_reg_op_sig(68 downto 65);
+      RD_ex_sig <= EX_reg_op_sig(67 downto 65);
     when "0001" =>
       RD_ex_sig <= EX_reg_op_sig(73 downto 71);
     when "0011" =>

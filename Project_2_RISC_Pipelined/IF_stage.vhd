@@ -136,7 +136,14 @@ begin
 a: PC port map(EN => PC_en_control,CLK=>clock,reset=>reset,ip=>PC_in,op=>PC_out);
 b: memory_instruction port map(clk=>clock,address=>PC_out,data_out=>mem_instr_out);
 c: ALU_1 port map(alu_in=>PC_out,alu_out=>ALU1_out);
-d: IF_interface_reg port map(EN=>'1',reset=>reset,CLk=>clock,ip(32 downto 17)=>PC_out,ip(16 downto 1)=>mem_instr_out,ip(0)=>validate_control,op=>IF_reg_op);
+d: IF_interface_reg port map(
+		EN=>'1',
+		reset=>reset,
+		CLk=>clock,
+		ip(32 downto 17)=>PC_out,
+		ip(16 downto 1)=>mem_instr_out,
+		ip(0)=>validate_control,
+		op=>IF_reg_op);
 process(PC_control,ALU1_out,memd_out,alu2_out,alu3_out,RF_d2,memid_08)
   begin
   if (PC_control = "000") then

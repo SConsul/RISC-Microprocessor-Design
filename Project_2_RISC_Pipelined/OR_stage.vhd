@@ -305,8 +305,10 @@ entity OR_stage is
     PE1_ip: in std_logic_vector (7 downto 0);
     OR_reg_op: out std_logic_vector (99 downto 0);
     PE2_op: out std_logic_vector (7 downto 0);
-    RF_d1_mux_control,RF_d2_mux_control: std_logic_vector(3 downto 0);
-    ALU3_op,RF_d2_or:out std_logic_vector (15 downto 0)
+	 --Check This! Edit: added "in"
+    RF_d1_mux_control,RF_d2_mux_control: in std_logic_vector(3 downto 0);
+    -----------------------------
+	 ALU3_op,RF_d2_or:out std_logic_vector (15 downto 0)
     );
 end entity;
 
@@ -459,7 +461,7 @@ begin
   end process;
 
 process( RF_d1_mux_control,alu2_forward,memd_forward,rf_d1_sig,EX_reg_op_ALU2,mem_reg_op_ALU2,mem_reg_memd
-			,instr08_OR,instr08_EX)
+			,instr08_OR,instr08_EX,instr08_mem)
 begin
 if(RF_d1_mux_control = "0000") then
   rf_d1_mux_sig<=rf_d1_sig;
@@ -485,7 +487,7 @@ end if;
 end process;
 
 process( RF_d2_mux_control,alu2_forward,memd_forward,rf_d2_sig,EX_reg_op_ALU2,
-			mem_reg_op_ALU2,mem_reg_memd,instr08_OR,instr08_mem)
+			mem_reg_op_ALU2,mem_reg_memd,instr08_OR,instr08_mem,instr08_EX)
 begin
 if(RF_d2_mux_control = "0000") then
   rf_d2_mux_sig<=rf_d2_sig;

@@ -16,7 +16,7 @@ end entity;
 architecture Behave of rem_controls is
 signal pc_control_lmlhi,pc_control_smlhi:std_logic_vector(2 downto 0);
 begin
-process(ID_opcode,OR_opcode,EX_opcode,mem_opcode,IF_opcode,dest_EX,dest_OR,dest_IF,dest_ID,RS_id1,nullify_ID,nullify_OR,nullify_EX,alu2z_flag,authentic_c,authentic_z,validate_IF,PE1_op,PE2_op)
+process(ID_opcode,OR_opcode,EX_opcode,mem_opcode,IF_opcode,dest_EX,dest_OR,dest_IF,dest_ID,RS_id1,nullify_ID,nullify_OR,nullify_EX,alu2z_flag,authentic_c,authentic_z,validate_IF,PE1_op,PE2_op,pc_control_lmlhi,pc_control_smlhi,RS_id2)
 begin
 	if(((EX_opcode(5 downto 2) = "0100") or (EX_opcode(5 downto 2) = "0110")) and (dest_EX = "111") and (nullify_EX = '0')) then
 			PC_control <= "001";

@@ -212,7 +212,7 @@ process(IF_reg_op)
 
 	end if;
 	end process;
-	process( PE2_ip,PE2_mux_control)
+	process( PE2_ip,PE2_mux_control,IF_reg_op)
 	begin
 		if(PE2_mux_control = '1') then
 			PE2_mux_op<=PE2_ip;
