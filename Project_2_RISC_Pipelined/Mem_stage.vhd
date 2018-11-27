@@ -107,7 +107,7 @@ else
 end if;
 end process;
 
-process(EX_reg_op)
+process(EX_reg_op,memd_z_flag)
 begin
 if((EX_reg_op(93 downto 90)="0100") and (EX_reg_op(0)='0')) then
   memd_muxz_output<=memd_z_flag;

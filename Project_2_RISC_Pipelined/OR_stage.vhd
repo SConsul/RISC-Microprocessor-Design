@@ -161,6 +161,32 @@ process(ip)
   end if;
 end process;
 end PriorityEncoder;
+-------------------------------------------
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity reg is
+Generic (NUM_BITS : INTEGER := 16);
+  port (EN, reset, CLK: in std_logic;
+        ip: in std_logic_vector(NUM_BITS-1 downto 0);
+        op: out std_logic_vector(NUM_BITS-1 downto 0)
+		  );
+end entity;
+
+architecture reg_arch of reg is
+begin
+reg1 : process(CLK, EN, ip)
+begin
+  if CLK'event and CLK = '1' then
+    if reset = '1' then
+      op(NUM_BITS-1 downto 0) <= (others=>'0');
+    elsif EN = '1' then
+      op <= ip;
+    end if;
+  end if;
+end process;
+
+end reg_arch;
 
 ---------------------------------------------
 
@@ -227,7 +253,7 @@ wr_enable_final(2) <= wr_enable(2) and rf_wr;
 wr_enable_final(3) <= wr_enable(3) and rf_wr;
 wr_enable_final(4) <= wr_enable(4) and rf_wr;
 wr_enable_final(5) <= wr_enable(5) and rf_wr;
-wr_enable_final(6) <= wr_enable(6) and rf_wr; 
+wr_enable_final(6) <= wr_enable(6) and rf_wr;
 
   R : for n in 0 to 6 generate
       Rn: reg port map(EN =>wr_enable_final(n),reset => reset,CLK => CLK,ip=>reg_in(n),op=>reg_out(n));
@@ -255,9 +281,9 @@ begin
   process( alu_a, alu_b)
   variable a_a, a_b : std_logic_vector(15 downto 0);
   variable a_o : std_logic_vector(15 downto 0);
-  
+
    begin
-    
+
     a_a(15 downto 0) := alu_a;
     a_b(15 downto 0) := alu_b;
     a_o := std_logic_vector(unsigned(a_a) + unsigned(a_b));
@@ -276,13 +302,13 @@ entity OR_stage is
     PC_ex,alu2_out_mem,memd_out,PC_mem,left_shifted,alu2_forward,memd_forward,EX_reg_op_ALU2,mem_reg_op_ALU2,mem_reg_memd,instr08_OR,instr08_EX,instr08_mem: in std_logic_vector (15 downto 0);
     memi35_mem,memi911_mem,PE1_dest: in std_logic_vector (2 downto 0);
     nullify_ex,clock,reset,mem_rf_en,nullify_control_OR,PE1_mux_control: in std_logic;
-    PE1_ip: in std_logic_vector (7 downto 0); 
+    PE1_ip: in std_logic_vector (7 downto 0);
     OR_reg_op: out std_logic_vector (99 downto 0);
     PE2_op: out std_logic_vector (7 downto 0);
     RF_d1_mux_control,RF_d2_mux_control: std_logic_vector(3 downto 0);
     ALU3_op,RF_d2_or:out std_logic_vector (15 downto 0)
     );
-end entity; 
+end entity;
 
 architecture Behave of OR_stage is
 
@@ -355,11 +381,27 @@ c: ALU_3 port map (alu_a=>SE_mux_op,alu_b=>ID_reg_op(51 downto 36),alu_out=>alu3
 d: RegFile port map(CLK => clock, reset=>reset,rf_a1=>ID_reg_op(31 downto 29),rf_a2 => RF_a2_sig, rf_a3 =>RF_a3_sig,rf_d3=>RF_d3_sig,rf_d1=>rf_d1_sig,rf_d2=>rf_d2_sig,rf_wr =>mem_rf_en );
 e: R7 port map(EN=>not(nullify_ex),ip=>PC_ex,op=>R7_op,reset=>reset,clk=>clock);
 f: priority_encoder2 port map(ip=>ID_reg_op(7 downto 0), op_addr=>op_PE2, update=> PE2_op);
-g: OR_interface_reg port map(EN=>'1',reset=>reset,CLK=>clock,ip(99 downto 84)=>ID_reg_op(51 downto 36),ip(83 downto 68)=>ID_reg_op(35 downto 20),ip(67 downto 52)=>rf_d1_mux_sig,ip(51 downto 34)=>rf_d2_mux_sig,ip(35 downto 20)=>alu3_op_sig,ip(19)=>(ID_reg_op(19) and not(nullify_control_OR)),ip(18)=>(ID_reg_op(18) and not(nullify_control_OR)),ip(17 downto 11)=>ID_reg_op(17 downto 11),ip(10)=>(ID_reg_op(10) and not(nullify_control_OR)),ip(9)=>(ID_reg_op(9) and not(nullify_control_OR)),ip(8)=>nullify_control_OR,ip(7 downto 0)=>PE1_mux_op);
+g: OR_interface_reg port map(
+      EN=>'1',
+      reset=>reset,
+      CLK=>clock,
+      ip(99 downto 84)=>ID_reg_op(51 downto 36),
+      ip(83 downto 68)=>ID_reg_op(35 downto 20),
+      ip(67 downto 52)=>rf_d1_mux_sig,
+      ip(51 downto 36)=>rf_d2_mux_sig,
+      ip(35 downto 20)=>alu3_op_sig,
+      ip(19)=>(ID_reg_op(19) and not(nullify_control_OR)),
+      ip(18)=>(ID_reg_op(18) and not(nullify_control_OR)),
+      ip(17 downto 11)=>ID_reg_op(17 downto 11),
+      ip(10)=>(ID_reg_op(10) and not(nullify_control_OR)),
+      ip(9)=>(ID_reg_op(9) and not(nullify_control_OR)),
+      ip(8)=>nullify_control_OR,
+      ip(7 downto 0)=>PE1_mux_op,
+		op=>OR_reg_op);
 
 RF_d2_or<=rf_d2_sig;
 ALU3_op<=alu3_op_sig;
-process(ID_reg_op)
+process(ID_reg_op,SE9_op,SE6_op)
 begin
 if (ID_reg_op(35 downto 32) ="1000") then
   SE_mux_op <= SE9_op;
@@ -379,7 +421,7 @@ else
 end if;
 end process;
 
-process(ID_reg_op)
+process(ID_reg_op,PE1_dest)
 begin
 if(ID_reg_op(14 downto 13) = "00") then
   RF_a3_sig <= ID_reg_op(25 downto 23);
@@ -392,12 +434,12 @@ else
 end if;
 end process;
 
-process(ID_reg_op)
+process(ID_reg_op,left_shifted,alu2_out_mem,PC_mem,memd_out)
 begin
 if (ID_reg_op(12 downto 11) = "00") then
   RF_d3_sig <= left_shifted;
 elsif (ID_reg_op(12 downto 11) = "01") then
-  RF_d3_sig <= alu2_out_mem; 
+  RF_d3_sig <= alu2_out_mem;
 elsif (ID_reg_op(12 downto 11) = "10") then
   RF_d3_sig <= PC_mem;
 elsif (ID_reg_op(12 downto 11) = "11") then
@@ -407,7 +449,7 @@ else
 end if;
 end process;
 
-process( PE1_ip,PE1_mux_control)
+process( PE1_ip,PE1_mux_control,ID_reg_op)
 begin
     if(PE1_mux_control = '1') then
       PE1_mux_op<=PE1_ip;
@@ -416,7 +458,8 @@ begin
     end if;
   end process;
 
-process( RF_d1_mux_control,alu2_forward,memd_forward,rf_d1_sig)
+process( RF_d1_mux_control,alu2_forward,memd_forward,rf_d1_sig,EX_reg_op_ALU2,mem_reg_op_ALU2,mem_reg_memd
+			,instr08_OR,instr08_EX)
 begin
 if(RF_d1_mux_control = "0000") then
   rf_d1_mux_sig<=rf_d1_sig;
@@ -441,7 +484,8 @@ else
 end if;
 end process;
 
-process( RF_d2_mux_control,alu2_forward,memd_forward,rf_d2_sig)
+process( RF_d2_mux_control,alu2_forward,memd_forward,rf_d2_sig,EX_reg_op_ALU2,
+			mem_reg_op_ALU2,mem_reg_memd,instr08_OR,instr08_mem)
 begin
 if(RF_d2_mux_control = "0000") then
   rf_d2_mux_sig<=rf_d2_sig;
