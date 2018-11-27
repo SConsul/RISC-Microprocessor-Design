@@ -160,10 +160,10 @@ entity EX_stage is
 port (OR_reg_op: in std_logic_vector(99 downto 0);
 	 RF_write_out,flagc_write_out,flagz_write_out: in std_logic;
 	 PE1_op: out std_logic_vector (7 downto 0);
-	 nullify_control_ex,reset,clock,authentic_c,authentic_z:in std_logic;
+	 nullify_control_ex,reset,clock:in std_logic;
 	 EX_reg_op: out std_logic_vector(93 downto 0);
 	 alu2_out,PCtoR7: out std_logic_vector(15 downto 0);
-	 nullify_ex: out std_logic
+	 nullify_ex,alu2_z: out std_logic
 
 );
 end entity;
@@ -236,6 +236,7 @@ d: EX_interface_reg port map(EN=>'1',CLK=>clock,reset=>reset,ip(93 downto 78)=>O
 PCtoR7 <= EX_reg_op_sig(93 downto 78);
 nullify_ex <= EX_reg_op_sig(0);
 EX_reg_op <= EX_reg_op_sig;
+alu2_z<=alu_flagz_sig;
 
 process(OR_reg_op)
 begin
