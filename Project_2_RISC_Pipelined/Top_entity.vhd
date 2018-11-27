@@ -104,7 +104,7 @@ component write_control is
 
 port(
 opcode_mem,opcode_EX,opcode_OR: in std_logic_vector(5 downto 0);
-flag_z_ex,flag_c_ex,flag_z_mem,flag_c_mem,flagz_enable_ex,flagc_enable_ex,load_flag_z,nullify_ex,rf_write_or,flagc_write_or,flagz_write_or: in std logic;
+flag_z_ex,flag_c_ex,flag_z_mem,flag_c_mem,flagz_enable_ex,flagc_enable_ex,load_flag_z,nullify_ex,rf_write_or,flagc_write_or,flagz_write_or: in std_logic;
 RF_write_out,flagc_write_out,flagz_write_out,authentic_c_op,authentic_z_op: out std_logic
 );
 
@@ -233,7 +233,7 @@ c: OR_stage port map (
     				instr08_OR(6 downto 0)=>"0000000",
     				instr08_EX(15 downto 7)=>EX_reg_op_sig(70 downto 62),
     				instr08_EX(6 downto 0)=>"0000000",
-    				instr08_mem=>mem_reg_op_sig(53 downto 45),
+    				instr08_mem(15 downto 7)=>mem_reg_op_sig(53 downto 45),
     				instr08_mem(6 downto 0)=>"0000000",
     				memi35_mem=>memi35_sig,
     				memi911_mem=>memi911_sig,

@@ -14,7 +14,7 @@ PC_control: out std_logic_vector(2 downto 0)
 end entity;
 
 architecture Behave of rem_controls is
-signal pc_control_lmlhi,pc_control_smlhi:std_logic(2 downto 0);
+signal pc_control_lmlhi,pc_control_smlhi:std_logic_vector(2 downto 0);
 begin
 process(ID_opcode,OR_opcode,EX_opcode,mem_opcode,IF_opcode,dest_EX,dest_OR,dest_IF,dest_ID,RS_id1,nullify_ID,nullify_OR,nullify_EX,alu2z_flag,authentic_c,authentic_z,validate_IF,PE1_op,PE2_op)
 begin
@@ -82,7 +82,7 @@ begin
 			nullify_control_mem<=nullify_EX;
 			ID_en<='1';
 			ID_en_8bits<='1';
-	elsif (((OR_opcode(5 downto 2) = "0110") and (nullify_OR = '0') and (PE1_op = "00000000")) or ((ID_opcode(5 downto 2) = "0110") and (nullify_ID = '0')) then
+	elsif (((OR_opcode(5 downto 2) = "0110") and (nullify_OR = '0') and (PE1_op = "00000000")) or ((ID_opcode(5 downto 2) = "0110") and (nullify_ID = '0'))) then
 			if((OR_opcode(5 downto 2) = "0110") and (nullify_OR = '0') and (PE1_op = "00000000")) then
 				PC_en_control <= '1';
 				ID_en<='1';

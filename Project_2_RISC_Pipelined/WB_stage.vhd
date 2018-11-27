@@ -75,23 +75,23 @@ architecture Behave of WB_stage is
 component user_flagz is
 Generic (NUM_BITS : INTEGER :=1);
   port (EN, reset, CLK: in std_logic;
-        ip: in std_logic_vector(NUM_BITS-1 downto 0);
-        op: out std_logic_vector(NUM_BITS-1 downto 0)
+        ip: in std_logic;
+        op: out std_logic
       );
 end component;
 
 component user_flagc is
 Generic (NUM_BITS : INTEGER :=1);
   port (EN, reset, CLK: in std_logic;
-        ip: in std_logic_vector(NUM_BITS-1 downto 0);
-        op: out std_logic_vector(NUM_BITS-1 downto 0)
+        ip: in std_logic;
+        op: out std_logic
       );
 end component;
 
 begin
 
-a: user_flag_z port map(EN=>mem_reg_op(6),CLK=>clock,reset=>reset,ip=>mem_reg_op(1),op=>user_zflag);
-b: user_flag_c port map(EN=>mem_reg_op(7),CLK=>clock,reset=>reset,ip=>mem_reg_op(2),op=>user_cflag);
+a: user_flagz port map(EN=>mem_reg_op(6),CLK=>clock,reset=>reset,ip=>mem_reg_op(1),op=>user_zflag);
+b: user_flagc port map(EN=>mem_reg_op(7),CLK=>clock,reset=>reset,ip=>mem_reg_op(2),op=>user_cflag);
 left_shifted(15 downto 7)<=mem_reg_op(53 downto 45);
 left_shifted(6 downto 0)<="0000000";
 alu2_out<=mem_reg_op(28 downto 13);
