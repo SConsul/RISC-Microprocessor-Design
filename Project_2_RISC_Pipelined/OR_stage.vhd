@@ -355,7 +355,7 @@ c: ALU_3 port map (alu_a=>SE_mux_op,alu_b=>ID_reg_op(51 downto 36),alu_out=>alu3
 d: RegFile port map(CLK => clock, reset=>reset,rf_a1=>ID_reg_op(31 downto 29),rf_a2 => RF_a2_sig, rf_a3 =>RF_a3_sig,rf_d3=>RF_d3_sig,rf_d1=>rf_d1_sig,rf_d2=>rf_d2_sig,rf_wr =>mem_rf_en );
 e: R7 port map(EN=>not(nullify_ex),ip=>PC_ex,op=>R7_op);
 f: priority_encoder2 port map(ip=>ID_reg_op(7 downto 0), op_addr=>op_PE2, update=> PE2_op);
-g: OR_interface_reg port map(EN=>'1',reset=>reset,CLK=>clock,ip(99 downto 84)=>ID_reg_op(51 downto 36),ip(83 downto 68)=>ID_reg_op(35 downto 20),ip(67 downto 52)=>rf_d1_mux_sig,ip(51 downto 34)=>rf_d2_mux_sig,ip(35 downto 20)=>alu3_op,ip(19 downto 9)=>ID_reg_op(19 downto 9),ip(8)=>nullify_control_OR,ip(7 downto 0)=>PE1_mux_op);
+g: OR_interface_reg port map(EN=>'1',reset=>reset,CLK=>clock,ip(99 downto 84)=>ID_reg_op(51 downto 36),ip(83 downto 68)=>ID_reg_op(35 downto 20),ip(67 downto 52)=>rf_d1_mux_sig,ip(51 downto 34)=>rf_d2_mux_sig,ip(35 downto 20)=>alu3_op,ip(19)=>(ID_reg_op(19) and not(nullify_control_OR)),ip(18)=>(ID_reg_op(18) and not(nullify_control_OR)),ip(17 downto 11)=>ID_reg_op(17 downto 11),ip(10)=>(ID_reg_op(10) and not(nullify_control_OR)),ip(9)=>(ID_reg_op(9) and not(nullify_control_OR)),ip(8)=>nullify_control_OR,ip(7 downto 0)=>PE1_mux_op);
 
 RF_d2_or<=rf_d2_sig;
 process(ID_reg_op)
