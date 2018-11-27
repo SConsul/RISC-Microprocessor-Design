@@ -343,7 +343,7 @@ component ALU_3 is
       alu_out: out std_logic_vector(15 downto 0));
 end component;
 
-signal SE6_op,SE9_op,SE_mux_op,RF_D3_sig,alu3_op,R7_op,rf_d1_sig,rf_d2_sig,rf_d1_mux_sig,rf_d2_mux_sig: std_logic_vector (15 downto 0);
+signal SE6_op,SE9_op,SE_mux_op,RF_D3_sig,alu3_op_sig,R7_op,rf_d1_sig,rf_d2_sig,rf_d1_mux_sig,rf_d2_mux_sig: std_logic_vector (15 downto 0);
 signal RF_a3_sig,RF_a2_sig,op_PE2: std_logic_vector (2 downto 0);
 signal PE1_mux_op: std_logic_vector(7 downto 0);
 
@@ -351,13 +351,14 @@ begin
 
 a: SE6 port map (ip=>ID_reg_op(25 downto 20),op=>SE6_op);
 b: SE9 port map (ip=>ID_reg_op(28 downto 20),op=>SE9_op);
-c: ALU_3 port map (alu_a=>SE_mux_op,alu_b=>ID_reg_op(51 downto 36),alu_out=>alu3_op);
+c: ALU_3 port map (alu_a=>SE_mux_op,alu_b=>ID_reg_op(51 downto 36),alu_out=>alu3_op_sig);
 d: RegFile port map(CLK => clock, reset=>reset,rf_a1=>ID_reg_op(31 downto 29),rf_a2 => RF_a2_sig, rf_a3 =>RF_a3_sig,rf_d3=>RF_d3_sig,rf_d1=>rf_d1_sig,rf_d2=>rf_d2_sig,rf_wr =>mem_rf_en );
-e: R7 port map(EN=>not(nullify_ex),ip=>PC_ex,op=>R7_op);
+e: R7 port map(EN=>not(nullify_ex),ip=>PC_ex,op=>R7_op,reset=>reset,clk=>clock);
 f: priority_encoder2 port map(ip=>ID_reg_op(7 downto 0), op_addr=>op_PE2, update=> PE2_op);
-g: OR_interface_reg port map(EN=>'1',reset=>reset,CLK=>clock,ip(99 downto 84)=>ID_reg_op(51 downto 36),ip(83 downto 68)=>ID_reg_op(35 downto 20),ip(67 downto 52)=>rf_d1_mux_sig,ip(51 downto 34)=>rf_d2_mux_sig,ip(35 downto 20)=>alu3_op,ip(19)=>(ID_reg_op(19) and not(nullify_control_OR)),ip(18)=>(ID_reg_op(18) and not(nullify_control_OR)),ip(17 downto 11)=>ID_reg_op(17 downto 11),ip(10)=>(ID_reg_op(10) and not(nullify_control_OR)),ip(9)=>(ID_reg_op(9) and not(nullify_control_OR)),ip(8)=>nullify_control_OR,ip(7 downto 0)=>PE1_mux_op);
+g: OR_interface_reg port map(EN=>'1',reset=>reset,CLK=>clock,ip(99 downto 84)=>ID_reg_op(51 downto 36),ip(83 downto 68)=>ID_reg_op(35 downto 20),ip(67 downto 52)=>rf_d1_mux_sig,ip(51 downto 34)=>rf_d2_mux_sig,ip(35 downto 20)=>alu3_op_sig,ip(19)=>(ID_reg_op(19) and not(nullify_control_OR)),ip(18)=>(ID_reg_op(18) and not(nullify_control_OR)),ip(17 downto 11)=>ID_reg_op(17 downto 11),ip(10)=>(ID_reg_op(10) and not(nullify_control_OR)),ip(9)=>(ID_reg_op(9) and not(nullify_control_OR)),ip(8)=>nullify_control_OR,ip(7 downto 0)=>PE1_mux_op);
 
 RF_d2_or<=rf_d2_sig;
+ALU3_op<=alu3_op_sig;
 process(ID_reg_op)
 begin
 if (ID_reg_op(35 downto 32) ="1000") then
@@ -371,10 +372,10 @@ end process;
 
 process(ID_reg_op,op_PE2)
 begin
-if (ID_reg_op(35 downto 32) = "0111" and not(ID_reg_op(8))) then
-  rf_a2 <= op_PE2;
+if (ID_reg_op(35 downto 32) = "0111" and ID_reg_op(8)='0' ) then
+  rf_a2_sig <= op_PE2;
 else
-  rf_a2 <= ID_reg_op(28 downto 26);
+  rf_a2_sig <= ID_reg_op(28 downto 26);
 end if;
 end process;
 

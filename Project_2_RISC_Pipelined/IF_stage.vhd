@@ -12,7 +12,7 @@ architecture mem of memory_instruction is
   type RAM_array is array (0 to 2**4-1) of std_logic_vector (15 downto 0);
 	signal RAM : RAM_array:= (X"3115",X"32C7",X"0050",X"039A",others=>X"0000");
 begin
-  process(clk,data_in, address, RAM)
+  process(clk, address, RAM)
     begin
     if rising_edge(clk) then
       data_out <= RAM(to_integer(unsigned(address)));
@@ -134,7 +134,7 @@ signal PC_out,PC_in: std_logic_vector(15 downto 0);
 signal ALU1_out,mem_instr_out: std_logic_vector(15 downto 0);
 begin
 a: PC port map(EN => PC_en_control,CLK=>clock,reset=>reset,ip=>PC_in,op=>PC_out);
-b: memory_instruction port map(clock=>clock,address=>PC_out,data_out=>mem_instr_out);
+b: memory_instruction port map(clk=>clock,address=>PC_out,data_out=>mem_instr_out);
 c: ALU_1 port map(alu_in=>PC_out,alu_out=>ALU1_out);
 d: IF_interface_reg port map(EN=>'1',reset=>reset,CLk=>clock,ip(32 downto 17)=>PC_out,ip(16 downto 1)=>mem_instr_out,ip(0)=>validate_control,op=>IF_reg_op);
 process(PC_control,ALU1_out)

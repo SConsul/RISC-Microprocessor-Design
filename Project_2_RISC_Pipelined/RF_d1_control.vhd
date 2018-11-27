@@ -16,7 +16,7 @@ end entity;
 
 architecture Behave of RF_d1_control is
 begin
-process(RS_id1,RD_or,RD_ex,RD_mem,ID_opcode,EX_opcode,OR_opcode,mem_opcode,cflag_ex,cflag_mem,zflag_ex,zflag_mem,nullify_or,nullify_id,nullify_ex,nullify_mem)
+process(RS_id1,RD_or,RD_ex,RD_mem,ID_opcode,EX_opcode,OR_opcode,mem_opcode,cflag_ex,cflag_mem,zflag_ex,zflag_mem,nullify_or,nullify_id,nullify_ex,nullify_mem,PE1_op,PE2_stored,user_cflag,user_zflag)
 begin
 if((OR_opcode(5 downto 2) = "0110" and nullify_or ='0' and PE1_op /= "00000000") or (OR_opcode(5 downto 2) = "0111" and nullify_or ='0' and PE2_stored /= "00000000")) then
 	RF_d1_mux_control<="0001";

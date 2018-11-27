@@ -15,7 +15,7 @@ end entity;
 
 architecture Behave of RF_d2_control is
 begin
-process(RS_id2,RD_or,RD_ex,RD_mem,ID_opcode,EX_opcode,OR_opcode,mem_opcode,cflag_ex,cflag_mem,zflag_ex,zflag_mem,nullify_or,nullify_id,nullify_ex,nullify_mem)
+process(RS_id2,RD_or,RD_ex,RD_mem,ID_opcode,EX_opcode,OR_opcode,mem_opcode,cflag_ex,cflag_mem,zflag_ex,zflag_mem,nullify_or,nullify_id,nullify_ex,nullify_mem,user_zflag,user_cflag)
 begin
 if(((ID_opcode = "0000") or (ID_opcode = "0001") or
     (ID_opcode = "0010") or (ID_opcode = "0101") or

@@ -14,7 +14,7 @@ architecture Behave of PE2_mux_control is
 	begin
 	process(ID_reg_opcode,nullified_id)
 	begin
-	if(ID_reg_opcode = "0111" and not(nullified_id)) then
+	if(ID_reg_opcode = "0111" and nullified_id='0') then
 		PE2_mux_controller<='1';
 	else
 		PE2_mux_controller<='0';

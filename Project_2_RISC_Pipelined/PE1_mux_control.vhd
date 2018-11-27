@@ -14,10 +14,10 @@ architecture Behave of PE1_mux_control is
 	begin
 	process(OR_reg_opcode,nullified_or)
 	begin
-	if(OR_reg_opcode = "0110" and not(nullified_or)) then
-		PE1_mux_control<='1';
+	if(OR_reg_opcode = "0110" and nullified_or='0') then
+		PE1_mux_controller<='1';
 	else
-		PE1_mux_control<='0';
+		PE1_mux_controller<='0';
 end if;
 end process;
 end Behave;

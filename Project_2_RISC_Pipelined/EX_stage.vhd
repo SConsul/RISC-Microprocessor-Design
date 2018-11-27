@@ -156,6 +156,10 @@ end if;
 end process;
 end SignedExtender;
 ---------------------------------------------------------------
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
 entity EX_stage is 
 port (OR_reg_op: in std_logic_vector(99 downto 0);
 	 RF_write_out,flagc_write_out,flagz_write_out: in std_logic;
