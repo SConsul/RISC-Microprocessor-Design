@@ -367,7 +367,7 @@ k:RF_d1_control port map(
 					mem_opcode=>mem_opcode_sig,
 					PE1_op=>PE1_ip_signal,
 					PE2_stored=>ID_reg_op_sig(7 downto 0),
-					cflag_ex=>EX_reg_op_sig(2)
+					cflag_ex=>EX_reg_op_sig(2),
 					cflag_mem=>mem_reg_op_sig(2),
 					zflag_ex=>EX_reg_op_sig(1),
 					zflag_mem=>mem_reg_op_sig(1),
@@ -439,7 +439,7 @@ begin
     when "0101" =>
       RS_id1_sig <= ID_reg_op_sig(31 downto 29);
     when others =>
-      RS_id1_sig <= "000"
+      RS_id1_sig <= "000";
   end case;
 end process;
 
@@ -451,7 +451,7 @@ begin
     when "0010" =>
       RS_id2_sig <= ID_reg_op_sig(28 downto 26);
     when others =>
-      RS_id2_sig <= "000"
+      RS_id2_sig <= "000";
   end case;
 end process;
 
@@ -467,7 +467,7 @@ begin
     when "0011" =>
       RD_or_sig <= OR_reg_op_sig(79 downto 77);
     when others =>
-      RD_or_sig <= "000"
+      RD_or_sig <= "000";
   end case;
 end process;
 
@@ -485,7 +485,7 @@ begin
     when "0100" =>
       RD_ex_sig <= EX_reg_op_sig(73 downto 71);
     when others =>
-      RD_ex_sig <= "000"
+      RD_ex_sig <= "000";
   end case;
 end process;
 
@@ -505,7 +505,7 @@ begin
     when "0110" =>
       RD_mem_sig <= mem_reg_op_sig(5 downto 3);
     when others =>
-      RD_mem_sig <= "000"
+      RD_mem_sig <= "000";
   end case;
 end process;
 

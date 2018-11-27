@@ -88,7 +88,7 @@ Generic (NUM_BITS : INTEGER :=1);
       );
 end component;
 
-begin:
+begin
 
 a: user_flag_z port map(EN=>mem_reg_op(6),CLK=>clock,reset=>reset,ip=>mem_reg_op(1),op=>user_zflag);
 b: user_flag_c port map(EN=>mem_reg_op(7),CLK=>clock,reset=>reset,ip=>mem_reg_op(2),op=>user_cflag);
