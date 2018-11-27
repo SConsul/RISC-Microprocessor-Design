@@ -28,7 +28,7 @@ begin
 			nullify_control_mem<=nullify_EX;
 			ID_en<='1';
 			ID_en_8bits<='1';
-	elsif(((OR_opcode = "000000") or (OR_opcode = "001000")) and (dest_OR = "111") and (nullify_OR = '0')) then
+	elsif(((OR_opcode = "000000") or (OR_opcode = "001000") or (OR_opcode(5 downto 2) = "0001")) and (dest_OR = "111") and (nullify_OR = '0')) then
 			PC_control <= "010";
 			PC_en_control <= '1';
 			validate_control_if<='0';
@@ -38,7 +38,7 @@ begin
 			nullify_control_mem<=nullify_EX;
 			ID_en<='1';
 			ID_en_8bits<='1';
-	elsif (((OR_opcode = "0000001") or (OR_opcode = "001001")) and (dest_OR = "111") and (nullify_OR = '0') and authentic_z = '1') then
+	elsif (((OR_opcode = "000001") or (OR_opcode = "001001")) and (dest_OR = "111") and (nullify_OR = '0') and authentic_z = '1') then
 			PC_control <= "010";
 			PC_en_control <= '1';
 			validate_control_if<='0';
@@ -48,7 +48,7 @@ begin
 			nullify_control_mem<=nullify_EX;
 			ID_en<='1';
 			ID_en_8bits<='1';
-	elsif (((OR_opcode = "0000010") or (OR_opcode = "001010")) and (dest_OR = "111") and (nullify_OR = '0') and authentic_c = '1') then
+	elsif (((OR_opcode = "000010") or (OR_opcode = "001010")) and (dest_OR = "111") and (nullify_OR = '0') and authentic_c = '1') then
 			PC_control <= "010";
 			PC_en_control <= '1';
 			validate_control_if<='0';
@@ -58,7 +58,7 @@ begin
 			nullify_control_mem<=nullify_EX;
 			ID_en<='1';
 			ID_en_8bits<='1';
-	elsif ((OR_opcode(5 downto 2) = "1100") and (dest_OR = "111") and (nullify_OR = '0') and (alu2z_flag = '1')) then
+	elsif ((OR_opcode(5 downto 2) = "1100") and (nullify_OR = '0') and (alu2z_flag = '1')) then
 			PC_control <= "011";
 			PC_en_control <= '1';
 			validate_control_if<='0';
