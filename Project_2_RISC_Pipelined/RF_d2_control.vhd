@@ -16,9 +16,14 @@ end entity;
 architecture Behave of RF_d2_control is
 begin
 process(RS_id2,RD_or,RD_ex,RD_mem,ID_opcode,EX_opcode,OR_opcode,mem_opcode,cflag_ex,cflag_mem,zflag_ex,zflag_mem,nullify_or,nullify_id,nullify_ex,nullify_mem)
+begin
+if(((ID_opcode = "0000") or (ID_opcode = "0001") or
+    (ID_opcode = "0010") or (ID_opcode = "0101") or
+    (ID_opcode = "0111") ) and (nullify_id  = '0')) then
 
-if(((ID_opcode = "0000") or (ID_opcode = "0001") or (ID_opcode = "0010") or (ID_opcode = "0101") or (ID_opcode = "0111") ) and (nullify_id  = '0')) then
-	if((((OR_opcode(5 downto 2) = "0000") or (OR_opcode(5 downto 2) = "0001") or (OR_opcode(5 downto 2) = "0010") or (OR_opcode(5 downto 2) = "0011")) and (nullify_or  = '0')) and (RS_id2 = RD_or)) then
+  if((((OR_opcode(5 downto 2) = "0000") or (OR_opcode(5 downto 2) = "0001") or
+      (OR_opcode(5 downto 2) = "0010") or (OR_opcode(5 downto 2) = "0011")) and
+      (nullify_or  = '0')) and (RS_id2 = RD_or)) then
 
 		if((OR_opcode(1 downto 0) = "00") or (OR_opcode(5 downto 2) = "0001")) then
 			RF_d2_mux_control<="0001";
@@ -28,13 +33,16 @@ if(((ID_opcode = "0000") or (ID_opcode = "0001") or (ID_opcode = "0010") or (ID_
 			RF_d2_mux_control<="0110";
 		else
 			RF_d2_mux_control<="0000";
-
 		end if;
 
-	elsif((((EX_opcode(5 downto 2) = "0000") or (EX_opcode(5 downto 2) = "0001") or (EX_opcode(5 downto 2) = "0010") or (EX_opcode(5 downto 2) = "0100") or (EX_opcode(5 downto 2) = "0011")) and (nullify_ex  = '0')) and (RS_id2 = RD_ex)) then
+	elsif((((EX_opcode(5 downto 2) = "0000") or (EX_opcode(5 downto 2) = "0001") or
+          (EX_opcode(5 downto 2) = "0010") or (EX_opcode(5 downto 2) = "0100") or
+          (EX_opcode(5 downto 2) = "0011")) and (nullify_ex  = '0')) and
+          (RS_id2 = RD_ex)) then
 		if((EX_opcode(1 downto 0) = "00") or (EX_opcode(5 downto 2) = "0001")) then
 			RF_d2_mux_control<="0011";
-		elsif(((EX_opcode(1 downto 0) = "10") and (cflag_mem = '1')) or ((EX_opcode(1 downto 0) = "01") and (zflag_mem = '1')) ) then
+		elsif(((EX_opcode(1 downto 0) = "10") and (cflag_mem = '1')) or
+          ((EX_opcode(1 downto 0) = "01") and (zflag_mem = '1')) ) then
 			RF_d2_mux_control<="0011";
 		elsif(EX_opcode(5 downto 2) = "0100") then
 			RF_d2_mux_control<="0010";

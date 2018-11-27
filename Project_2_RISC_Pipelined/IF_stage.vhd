@@ -142,7 +142,7 @@ process(PC_control,ALU1_out)
   if (PC_control = "000") then
     PC_in<=ALU1_out;
   elsif (PC_control = "001") then
-    PC_in<=memd_out
+    PC_in<=memd_out;
   elsif (PC_control = "010") then
     PC_in<=alu2_out;
   elsif (PC_control = "011") then

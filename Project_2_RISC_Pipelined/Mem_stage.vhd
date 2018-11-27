@@ -96,6 +96,7 @@ memd_out<= mem_data_out_sig;
 load_flag_z<=memd_z_flag;
 
 process(mem_data_out_sig)
+begin
 if (mem_data_out_sig = "0000000000000000") then
   memd_z_flag<='1';
 else
@@ -104,6 +105,7 @@ end if;
 end process;
 
 process(EX_reg_op)
+begin
 if((EX_reg_op(93 downto 90)="0100") and (EX_reg_op(0)='0')) then
   memd_muxz_output<=memd_z_flag;
 else 
@@ -112,6 +114,7 @@ end if;
 end process;
 
 process(EX_reg_op)
+begin
 if (EX_reg_op(93 downto 90)="0111" ) then
   mem_mux_datain_op<=EX_reg_op(21 downto 6);
 else
@@ -120,6 +123,7 @@ end if;
 end process;
 
 process(EX_reg_op)
+begin
 if ((EX_reg_op(93 downto 90) = "0111") or ((EX_reg_op(93 downto 90) = "0110"))) then
   mem_muxaddr_op<=std_logic_vector(unsigned(EX_reg_op(53 downto 38)) - 1);
 else

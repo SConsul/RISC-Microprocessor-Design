@@ -2,7 +2,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity PE2_mux_control
+entity PE2_mux_control is
 port(
 ID_reg_opcode: in std_logic_vector(3 downto 0);
 nullified_id: in std_logic;

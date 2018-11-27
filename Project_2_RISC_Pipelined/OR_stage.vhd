@@ -406,7 +406,8 @@ else
 end if;
 end process;
 
-process( PE1_ip,PE1_mux_control);
+process( PE1_ip,PE1_mux_control)
+begin
     if(PE1_mux_control = '1') then
       PE1_mux_op<=PE1_ip;
     else
@@ -433,7 +434,7 @@ elsif(RF_d1_mux_control = "0110") then
 elsif(RF_d1_mux_control = "0111") then
   rf_d1_mux_sig<=instr08_EX;
 elsif(RF_d1_mux_control = "1000") then
-  rf_d1_mux_sig<=instr08_mem
+  rf_d1_mux_sig<=instr08_mem;
 else
   rf_d1_mux_sig<=rf_d1_sig;
 end if;
@@ -458,7 +459,7 @@ elsif(RF_d2_mux_control = "0101") then
 elsif(RF_d2_mux_control = "0111") then
   rf_d2_mux_sig<=instr08_EX;
 elsif(RF_d2_mux_control = "1000") then
-  rf_d2_mux_sig<=instr08_mem 
+  rf_d2_mux_sig<=instr08_mem ;
 else
   rf_d2_mux_sig<=rf_d2_sig;
 end if;

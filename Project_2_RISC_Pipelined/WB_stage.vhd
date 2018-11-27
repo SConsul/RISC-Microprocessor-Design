@@ -5,8 +5,8 @@ use ieee.numeric_std.all;
 entity user_flagz is
 Generic (NUM_BITS : INTEGER :=1);
   port (EN, reset, CLK: in std_logic;
-        ip: in std_logic_vector(NUM_BITS-1 downto 0);
-        op: out std_logic_vector(NUM_BITS-1 downto 0)
+        ip: in std_logic;
+        op: out std_logic
       );
 end entity;
 
@@ -16,7 +16,7 @@ reg1 : process(CLK, EN, ip)
 begin
   if CLK'event and CLK = '1' then
     if reset = '1' then
-      op(NUM_BITS-1 downto 0) <= (others=>'0');
+      op <= '0';
     elsif EN = '1' then
       op <= ip;
     end if;
@@ -34,8 +34,8 @@ use ieee.numeric_std.all;
 entity user_flagc is
 Generic (NUM_BITS : INTEGER :=1);
   port (EN, reset, CLK: in std_logic;
-        ip: in std_logic_vector(NUM_BITS-1 downto 0);
-        op: out std_logic_vector(NUM_BITS-1 downto 0)
+        ip: in std_logic;
+        op: out std_logic
       );
 end entity;
 
@@ -45,7 +45,7 @@ reg1 : process(CLK, EN, ip)
 begin
   if CLK'event and CLK = '1' then
     if reset = '1' then
-      op(NUM_BITS-1 downto 0) <= (others=>'0');
+      op <= '0';
     elsif EN = '1' then
       op <= ip;
     end if;
@@ -75,23 +75,23 @@ architecture Behave of WB_stage is
 component user_flagz is
 Generic (NUM_BITS : INTEGER :=1);
   port (EN, reset, CLK: in std_logic;
-        ip: in std_logic_vector(NUM_BITS-1 downto 0);
-        op: out std_logic_vector(NUM_BITS-1 downto 0)
+        ip: in std_logic;
+        op: out std_logic
       );
 end component;
 
 component user_flagc is
 Generic (NUM_BITS : INTEGER :=1);
   port (EN, reset, CLK: in std_logic;
-        ip: in std_logic_vector(NUM_BITS-1 downto 0);
-        op: out std_logic_vector(NUM_BITS-1 downto 0)
+        ip: in std_logic;
+        op: out std_logic
       );
 end component;
 
-begin:
+begin
 
-a: user_flag_z port map(EN=>mem_reg_op(6),CLK=>clock,reset=>reset,ip=>mem_reg_op(1));
-b: user_flag_c port map(EN=>mem_reg_op(7),CLK=>clock,reset=>reset,ip=>mem_reg_op(2));
+a: user_flagz port map(EN=>mem_reg_op(6),CLK=>clock,reset=>reset,ip=>mem_reg_op(1));
+b: user_flagc port map(EN=>mem_reg_op(7),CLK=>clock,reset=>reset,ip=>mem_reg_op(2));
 left_shifted(15 downto 7)<=mem_reg_op(53 downto 45);
 left_shifted(6 downto 0)<="0000000";
 alu2_out<=mem_reg_op(28 downto 13);

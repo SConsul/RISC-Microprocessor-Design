@@ -219,7 +219,8 @@ port (
   );
 end component SE6_ex;
 
-signal alu_a_ip,alu2_out_sig: std_logic_vector,se6_ex_op: std_logic_vector(15 downto 0);
+signal alu_a_ip,alu2_out_sig: std_logic_vector;
+signal se6_ex_op: std_logic_vector(15 downto 0);
 signal alu_flagz_sig, alu_flagc_sig: std_logic;
 signal PE1_addr_sig: std_logic_vector(2 downto 0);
 signal EX_reg_op_sig: std_logic_vector(99 downto 0);

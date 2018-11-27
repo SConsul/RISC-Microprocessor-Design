@@ -6,7 +6,7 @@ entity write_control is
 
 port(
 opcode_mem,opcode_EX,opcode_OR: in std_logic_vector(5 downto 0);
-flag_z_ex,flag_c_ex,flag_z_mem,flag_c_mem,flagz_enable_ex,flagc_enable_ex,load_flag_z,nullify_ex,rf_write_or,flagc_write_or,flagz_write_or: in std logic;
+flag_z_ex,flag_c_ex,flag_z_mem,flag_c_mem,flagz_enable_ex,flagc_enable_ex,load_flag_z,nullify_ex,rf_write_or,flagc_write_or,flagz_write_or: in std_logic;
 RF_write_out,flagc_write_out,flagz_write_out: out std_logic
 );
 
