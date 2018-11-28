@@ -63,7 +63,9 @@ port(clock,reset:in std_logic;
 mem_reg_op:in std_logic_vector(76 downto 0);
 alu2_out,memd_out,PC_mem,left_shifted:out std_logic_vector(15 downto 0);
 memi_35,memi_911,PE1_dest: out std_logic_vector(2 downto 0);
-memrf_en,user_cflag,user_zflag:out std_logic
+memrf_en,user_cflag,user_zflag:out std_logic;
+RF_a3_control_mux,RF_d3_control_mux:out std_logic_vector(1 downto 0)
+
 );
 
 end entity;
@@ -99,5 +101,6 @@ memi_35<=mem_reg_op(50 downto 48);
 memi_911<=mem_reg_op(56 downto 54);
 PE1_dest<=mem_reg_op(5 downto 3);
 memrf_en<=mem_reg_op(12);
-
+RF_a3_control_mux<=mem_reg_op(11 downto 10);
+RF_d3_control_mux<=mem_reg_op(9 downto 8);
 end Behave;

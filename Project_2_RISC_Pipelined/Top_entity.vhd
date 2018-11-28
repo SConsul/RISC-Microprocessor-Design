@@ -35,6 +35,7 @@ component OR_stage is
     PE1_ip: in std_logic_vector (7 downto 0);
     OR_reg_op: out std_logic_vector (99 downto 0);
     PE2_op: out std_logic_vector (7 downto 0);
+    RF_a3_control,RF_d3_control: in std_logic_vector(1 downto 0);
     RF_d1_mux_control,RF_d2_mux_control: std_logic_vector(3 downto 0);
     ALU3_op,RF_d2_or:out std_logic_vector (15 downto 0)
     );
@@ -68,7 +69,8 @@ port(clock,reset:in std_logic;
 mem_reg_op:in std_logic_vector(76 downto 0);
 alu2_out,memd_out,PC_mem,left_shifted:out std_logic_vector(15 downto 0);
 memi_35,memi_911,PE1_dest: out std_logic_vector(2 downto 0);
-memrf_en,user_cflag,user_zflag:out std_logic
+memrf_en,user_cflag,user_zflag:out std_logic;
+RF_a3_control_mux,RF_d3_control_mux:out std_logic_vector(1 downto 0)
 );
 
 end component;
@@ -184,6 +186,7 @@ signal alu3_out_sig,
 	   PCtoR7_sig,
 	   left_shifted_sig,
 	   PC_mem_sig: std_logic_vector(15 downto 0);
+signal RF_a3_control_sig,RF_d3_control_sig: std_logic_vector(1 downto 0);
 signal IF_reg_op_sig: std_logic_vector(32 downto 0);
 signal ID_reg_op_sig: std_logic_vector(51 downto 0);
 signal OR_reg_op_sig: std_logic_vector(99 downto 0);
@@ -250,7 +253,9 @@ c: OR_stage port map (
     				RF_d1_mux_control=>RF_d1_mux_control_sig,
     				RF_d2_mux_control=>RF_d2_mux_control_sig,
     				ALU3_op=>alu3_out_sig,
-    				RF_d2_or=>RF_d2_sig
+    				RF_d2_or=>RF_d2_sig,
+    				RF_a3_control=>RF_a3_control_sig,
+    				RF_d3_control=>RF_d3_control_sig
 );
 d:EX_stage port map (
 					OR_reg_op=>OR_reg_op_sig,
@@ -289,7 +294,9 @@ f: WB_stage port map(clock=>clock,
 					PE1_dest=>PE1_dest_sig,
 					memrf_en=>mem_rf_en_sig,
 					user_zflag=>user_zflag_sig,
-					user_cflag=>user_cflag_sig
+					user_cflag=>user_cflag_sig,
+					RF_a3_control_mux=>RF_a3_control_sig,
+					RF_d3_control_mux=>RF_d3_control_sig
 );
 g: rem_controls port map(
 					ID_opcode(5 downto 2)=>ID_reg_op_sig(35 downto 32),

@@ -305,6 +305,7 @@ entity OR_stage is
     PE1_ip: in std_logic_vector (7 downto 0);
     OR_reg_op: out std_logic_vector (99 downto 0);
     PE2_op: out std_logic_vector (7 downto 0);
+    RF_a3_control,RF_d3_control:in std_logic_vector(1 downto 0);
 	 --Check This! Edit: added "in"
     RF_d1_mux_control,RF_d2_mux_control: in std_logic_vector(3 downto 0);
     -----------------------------
@@ -430,28 +431,28 @@ else
 end if;
 end process;
 
-process(ID_reg_op,PE1_dest)
+process(RF_a3_control,PE1_dest,memi35_mem,memi911_mem)
 begin
-if(ID_reg_op(14 downto 13) = "00") then
-  RF_a3_sig <= ID_reg_op(25 downto 23);
-elsif(ID_reg_op(14 downto 13) = "01") then
-  RF_a3_sig <= ID_reg_op(31 downto 29);
-elsif(ID_reg_op(14 downto 13) = "10") then
+if(RF_a3_control = "00") then
+  RF_a3_sig <= memi35_mem;
+elsif(RF_a3_control = "01") then
+  RF_a3_sig <= memi911_mem;
+elsif(RF_a3_control = "10") then
   RF_a3_sig <= PE1_dest;
 else
-  RF_a3_sig <= ID_reg_op(25 downto 23);
+  RF_a3_sig <= memi35_mem;
 end if;
 end process;
 
-process(ID_reg_op,left_shifted,alu2_out_mem,PC_mem,memd_out)
+process(RF_d3_control,left_shifted,alu2_out_mem,PC_mem,memd_out)
 begin
-if (ID_reg_op(12 downto 11) = "00") then
+if (RF_d3_control = "00") then
   RF_d3_sig <= left_shifted;
-elsif (ID_reg_op(12 downto 11) = "01") then
+elsif (RF_d3_control = "01") then
   RF_d3_sig <= alu2_out_mem;
-elsif (ID_reg_op(12 downto 11) = "10") then
+elsif (RF_d3_control = "10") then
   RF_d3_sig <= PC_mem;
-elsif (ID_reg_op(12 downto 11) = "11") then
+elsif (RF_d3_control = "11") then
   RF_d3_sig <= memd_out;
 else
   RF_d3_sig <= left_shifted;
