@@ -21,13 +21,13 @@ if(((ID_opcode = "0000") or (ID_opcode = "0001") or
     (ID_opcode = "0010") or (ID_opcode = "0101") or
     (ID_opcode = "0111") ) and (nullify_id  = '0')) then
 
-  if((((OR_opcode(5 downto 2) = "0000") or (OR_opcode(5 downto 2) = "0001") or
+if((((OR_opcode(5 downto 2) = "0000") or (OR_opcode(5 downto 2) = "0001") or
       (OR_opcode(5 downto 2) = "0010") or (OR_opcode(5 downto 2) = "0011")) and
       (nullify_or  = '0')) and (RS_id2 = RD_or)) then
 
-		if((OR_opcode(1 downto 0) = "00") or (OR_opcode(5 downto 2) = "0001")) then
+		if((OR_opcode(5 downto 0) = "000000") or (OR_opcode(5 downto 2) = "0001") or (OR_opcode(5 downto 0) = "001000")) then
 			RF_d2_mux_control<="0001";
-		elsif(((OR_opcode(1 downto 0) = "10") and (cflag_ex = '1')) or ((OR_opcode(1 downto 0) = "01") and (zflag_ex = '1')) ) then
+		elsif((((OR_opcode(5 downto 0) = "000010") or (OR_opcode(5 downto 0) = "001010")) and (cflag_ex = '1')) or (((OR_opcode(5 downto 0) = "000001") or (OR_opcode(5 downto 0) = "001001"))and (zflag_ex = '1')) ) then
 			RF_d2_mux_control<="0001";
 		elsif (OR_opcode(5 downto 2) = "0011") then
 			RF_d2_mux_control<="0110";
@@ -35,14 +35,13 @@ if(((ID_opcode = "0000") or (ID_opcode = "0001") or
 			RF_d2_mux_control<="0000";
 		end if;
 
-	elsif((((EX_opcode(5 downto 2) = "0000") or (EX_opcode(5 downto 2) = "0001") or
+elsif((((EX_opcode(5 downto 2) = "0000") or (EX_opcode(5 downto 2) = "0001") or
           (EX_opcode(5 downto 2) = "0010") or (EX_opcode(5 downto 2) = "0100") or
           (EX_opcode(5 downto 2) = "0011")) and (nullify_ex  = '0')) and
           (RS_id2 = RD_ex)) then
-		if((EX_opcode(1 downto 0) = "00") or (EX_opcode(5 downto 2) = "0001")) then
+		if((EX_opcode(5 downto 0) = "000000") or (EX_opcode(5 downto 2) = "0001") or (EX_opcode(5 downto 0) = "001000")) then
 			RF_d2_mux_control<="0011";
-		elsif(((EX_opcode(1 downto 0) = "10") and (cflag_mem = '1')) or
-          ((EX_opcode(1 downto 0) = "01") and (zflag_mem = '1')) ) then
+		elsif((((EX_opcode(5 downto 0) = "000010") or (EX_opcode(5 downto 0) = "001010")) and (cflag_mem = '1')) or (((EX_opcode(5 downto 0) = "000001") or (EX_opcode(5 downto 0) = "001001"))and (zflag_mem = '1'))) then
 			RF_d2_mux_control<="0011";
 		elsif(EX_opcode(5 downto 2) = "0100") then
 			RF_d2_mux_control<="0010";
@@ -52,10 +51,10 @@ if(((ID_opcode = "0000") or (ID_opcode = "0001") or
 			RF_d2_mux_control<="0000";
 		end if;
 
-	elsif((((mem_opcode(5 downto 2) = "0000") or (mem_opcode(5 downto 2) = "0001") or (mem_opcode(5 downto 2) = "0010") or (mem_opcode(5 downto 2) = "0100") or (mem_opcode(5 downto 2) = "0110") or  (mem_opcode(5 downto 2) = "0011")) and (nullify_mem  = '0')) and (RS_id2 = RD_mem)) then
-		if((mem_opcode(1 downto 0) = "00") or (mem_opcode(5 downto 2) = "0001")) then
+elsif((((mem_opcode(5 downto 2) = "0000") or (mem_opcode(5 downto 2) = "0001") or (mem_opcode(5 downto 2) = "0010") or (mem_opcode(5 downto 2) = "0100") or (mem_opcode(5 downto 2) = "0110") or  (mem_opcode(5 downto 2) = "0011")) and (nullify_mem  = '0')) and (RS_id2 = RD_mem)) then
+		if((mem_opcode(5 downto 0) = "000000") or (mem_opcode(5 downto 2) = "0001") or (mem_opcode(5 downto 0) = "001000")) then
 			RF_d2_mux_control<="0100";
-		elsif(((mem_opcode(1 downto 0) = "10") and (user_cflag = '1')) or ((mem_opcode(1 downto 0) = "01") and (user_zflag = '1')) ) then
+		elsif((((mem_opcode(5 downto 0) = "000010") or (mem_opcode(5 downto 0) = "001010")) and (user_cflag = '1')) or (((mem_opcode(5 downto 0) = "000001") or (mem_opcode(5 downto 0) = "001001"))and (user_zflag = '1')) ) then
 			RF_d2_mux_control<="0100";
 		elsif((mem_opcode(5 downto 2) = "0100") or (mem_opcode(5 downto 2) = "0110") ) then
 			RF_d2_mux_control<="0101";
