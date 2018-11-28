@@ -2,6 +2,33 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
+entity hbit is
+Generic (NUM_BITS : INTEGER := 1);
+  port (EN, reset, CLK: in std_logic;
+        ip: in std_logic;
+        op: out std_logic
+      );
+end entity;
+
+architecture reg_arch of hbit is
+begin
+reg1 : process(CLK, EN, ip)
+begin
+  if CLK'event and CLK = '1' then
+    if reset = '1' then
+      op <= '0';
+    elsif EN = '1' then
+      op <= ip;
+    end if;
+  end if;
+end process;
+
+end reg_arch;
+----------------------------------
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
 entity Top_entity is
 port(
 clock,reset: in std_logic
@@ -9,6 +36,16 @@ clock,reset: in std_logic
 end entity;
 
 architecture Behave of Top_entity is
+
+component hbit is
+Generic (NUM_BITS : INTEGER := 1);
+  port (EN, reset, CLK: in std_logic;
+        ip: in std_logic;
+        op: out std_logic
+      );
+end component;
+
+---------------------------------
 
 component IF_stage is
   port(reset,clock,validate_control,PC_en_control: in std_logic;
@@ -79,7 +116,7 @@ component rem_controls is
 port(
 ID_opcode,OR_opcode,EX_opcode,mem_opcode,IF_opcode:in std_logic_vector(5 downto 0);
 dest_EX,dest_OR,dest_ID,dest_IF,RS_id1,RS_id2: in std_logic_vector(2 downto 0);
-nullify_ID,nullify_OR,nullify_EX,alu2z_flag,authentic_c,authentic_z,validate_IF:in std_logic;
+nullify_ID,nullify_OR,nullify_EX,alu2z_flag,authentic_c,authentic_z,validate_IF,hbit_op:in std_logic;
 PE1_op,PE2_op:in std_logic_vector(7 downto 0);
 PC_en_control,ID_en,ID_en_8bits,validate_control_if,nullify_control_id,nullify_control_or,nullify_control_ex,nullify_control_mem: out std_logic;
 PC_control: out std_logic_vector(2 downto 0)
@@ -156,7 +193,9 @@ signal validate_control_sig,
 		EN_id_control_sig,
 		EN_8bits_control_sig,
 		user_zflag_sig,
-		user_cflag_sig: std_logic;
+		user_cflag_sig,
+		hbit_signal,
+		hbit_op: std_logic;
 signal PE2_ip_signal,PE1_ip_signal:std_logic_vector(7 downto 0);
 signal PC_control_sig,
 		memi35_sig,
@@ -329,7 +368,8 @@ g: rem_controls port map(
 					nullify_control_or=>nullify_control_OR_sig,
 					nullify_control_ex=>nullify_control_ex_sig,
 					nullify_control_mem=>nullify_control_mem_sig,
-					PC_control=>PC_control_sig
+					PC_control=>PC_control_sig,
+					hbit_op => hbit_op
 );
 h:PE1_mux_control port map(
 					OR_reg_opcode=>OR_reg_op_sig(83 downto 80),
@@ -408,6 +448,13 @@ l: RF_d2_control port map(
 					user_zflag=>user_zflag_sig,
 					RF_d2_mux_control=>RF_d2_mux_control_sig
 );
+m: hbit port map(
+					EN=>'1',
+					reset=>reset, 
+					CLK=>clock,
+			        ip=>hbit_signal,
+			        op=>hbit_op
+			        );
 OR_opcode_sig(5 downto 2)<= OR_reg_op_sig(83 downto 80);
 OR_opcode_sig(1 downto 0)<= OR_reg_op_sig(69 downto 68);
 EX_opcode_sig(5 downto 2)<= EX_reg_op_sig(77 downto 74);
@@ -515,6 +562,17 @@ begin
     when others =>
       RD_mem_sig <= "000";
   end case;
+end process;
+
+process(hbit_op,IF_reg_op_sig,PE2_ip_signal,ID_reg_op_sig)
+begin
+if((IF_reg_op_sig(16 downto 13) = "0111") and (IF_reg_op_sig(0) = '1')) then
+	hbit_signal <= '1';
+elsif((PE2_ip_signal /= "00000000") and (ID_reg_op_sig(35 downto 32) = "0111")) then
+	hbit_signal <= '1';
+else
+	hbit_signal <= '0';
+end if;
 end process;
 
 end Behave;

@@ -222,11 +222,15 @@ type rin is array(0 to 6) of std_logic_vector(NUM_BITS - 1 downto 0);
 signal reg_in,reg_out : rin;
 --signal r_in: std_logic_vector(15 downto 0);
 signal wr_enable,wr_enable_final: std_logic_vector(6 downto 0);
-
 begin
 
-rf_d1 <= reg_out(to_integer(unsigned(rf_a1)));
-rf_d2 <= reg_out(to_integer(unsigned(rf_a2)));
+with rf_a1 select
+ rf_d1 <=   "0000000000000000" when "111",
+          reg_out(to_integer(unsigned(rf_a1))) when others;
+			 
+with rf_a2 select
+ rf_d2 <=   "0000000000000000" when "111",
+          reg_out(to_integer(unsigned(rf_a2))) when others;
 
 with rf_a3 select
  wr_enable <=   "0000001" when "000",

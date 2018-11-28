@@ -11,7 +11,7 @@ entity memory_data is
 end entity;
 
 architecture mem of memory_data is
-  type RAM_array is array (0 to 2**4-1) of std_logic_vector (15 downto 0);
+  type RAM_array is array (0 to 2**16-1) of std_logic_vector (15 downto 0);
 	signal RAM : RAM_array:= (X"3001",X"3203",X"3605",X"700A",X"6014",X"C283",others=>X"0000");
 begin
   process(clk, mem_write, data_in, address, RAM)

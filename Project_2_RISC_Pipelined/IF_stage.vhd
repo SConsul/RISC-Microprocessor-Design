@@ -3,21 +3,15 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 entity memory_instruction is
-  port(clk: in std_logic;
+  port(
       address: in std_logic_vector(15 downto 0);
       data_out: out std_logic_vector(15 downto 0));
 end entity;
-
 architecture mem of memory_instruction is
   type RAM_array is array (0 to 2**4-1) of std_logic_vector (15 downto 0);
-	signal RAM : RAM_array:= (X"3115",X"32C7",X"0050",X"039A",others=>X"0000");
+	signal RAM : RAM_array:= (X"31FF",X"3202",X"0050",X"029A",others=>X"0000");
 begin
-  process(clk, address, RAM)
-    begin
-    if rising_edge(clk) then
       data_out <= RAM(to_integer(unsigned(address)));
-    end if;
-  end process;
 end architecture mem;
 ------------------------------------------------------------------------
 library ieee;
@@ -104,7 +98,7 @@ end entity;
 architecture arc of IF_stage is
 
 component memory_instruction is
-  port(clk: in std_logic;
+  port(
       address: in std_logic_vector(15 downto 0);
       data_out: out std_logic_vector(15 downto 0));
 end component;
@@ -134,7 +128,7 @@ signal PC_out,PC_in: std_logic_vector(15 downto 0);
 signal ALU1_out,mem_instr_out: std_logic_vector(15 downto 0);
 begin
 a: PC port map(EN => PC_en_control,CLK=>clock,reset=>reset,ip=>PC_in,op=>PC_out);
-b: memory_instruction port map(clk=>clock,address=>PC_out,data_out=>mem_instr_out);
+b: memory_instruction port map(address=>PC_out,data_out=>mem_instr_out);
 c: ALU_1 port map(alu_in=>PC_out,alu_out=>ALU1_out);
 d: IF_interface_reg port map(
 		EN=>'1',
