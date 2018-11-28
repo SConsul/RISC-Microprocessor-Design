@@ -312,7 +312,7 @@ entity OR_stage is
     );
 end entity;
 
-architecture Behave of OR_stage is
+architecture ors of OR_stage is
 
 component R7 is
 Generic (NUM_BITS : INTEGER := 16);
@@ -374,14 +374,21 @@ end component;
 signal SE6_op,SE9_op,SE_mux_op,RF_D3_sig,alu3_op_sig,R7_op,rf_d1_sig,rf_d2_sig,rf_d1_mux_sig,rf_d2_mux_sig: std_logic_vector (15 downto 0);
 signal RF_a3_sig,RF_a2_sig,op_PE2: std_logic_vector (2 downto 0);
 signal PE1_mux_op: std_logic_vector(7 downto 0);
-
+signal not_nullify_ex: std_logic;
+signal dummy_ip19,dummy_ip18, dummy_ip10, dummy_ip9: std_logic;
 begin
+
+not_nullify_ex <= not(nullify_ex);
+dummy_ip19 <= (ID_reg_op(19) and not(nullify_control_OR));
+dummy_ip18 <= (ID_reg_op(18) and not(nullify_control_OR));
+dummy_ip10 <= (ID_reg_op(10) and not(nullify_control_OR));
+dummy_ip9 <= (ID_reg_op(9) and not(nullify_control_OR));
 
 a: SE6 port map (ip=>ID_reg_op(25 downto 20),op=>SE6_op);
 b: SE9 port map (ip=>ID_reg_op(28 downto 20),op=>SE9_op);
 c: ALU_3 port map (alu_a=>SE_mux_op,alu_b=>ID_reg_op(51 downto 36),alu_out=>alu3_op_sig);
 d: RegFile port map(CLK => clock, reset=>reset,rf_a1=>ID_reg_op(31 downto 29),rf_a2 => RF_a2_sig, rf_a3 =>RF_a3_sig,rf_d3=>RF_d3_sig,rf_d1=>rf_d1_sig,rf_d2=>rf_d2_sig,rf_wr =>mem_rf_en );
-e: R7 port map(EN=>not(nullify_ex),ip=>PC_ex,op=>R7_op,reset=>reset,clk=>clock);
+e: R7 port map(EN=>not_nullify_ex,ip=>PC_ex,op=>R7_op,reset=>reset,clk=>clock);
 f: priority_encoder2 port map(ip=>ID_reg_op(7 downto 0), op_addr=>op_PE2, update=> PE2_op);
 g: OR_interface_reg port map(
       EN=>'1',
@@ -392,11 +399,11 @@ g: OR_interface_reg port map(
       ip(67 downto 52)=>rf_d1_mux_sig,
       ip(51 downto 36)=>rf_d2_mux_sig,
       ip(35 downto 20)=>alu3_op_sig,
-      ip(19)=>(ID_reg_op(19) and not(nullify_control_OR)),
-      ip(18)=>(ID_reg_op(18) and not(nullify_control_OR)),
+      ip(19)=>dummy_ip19,
+      ip(18)=>dummy_ip18,
       ip(17 downto 11)=>ID_reg_op(17 downto 11),
-      ip(10)=>(ID_reg_op(10) and not(nullify_control_OR)),
-      ip(9)=>(ID_reg_op(9) and not(nullify_control_OR)),
+      ip(10)=>dummy_ip10,
+      ip(9)=>dummy_ip9,
       ip(8)=>nullify_control_OR,
       ip(7 downto 0)=>PE1_mux_op,
 		op=>OR_reg_op);
@@ -512,4 +519,4 @@ else
 end if;
 end process;
 
-end Behave;
+end architecture ors;

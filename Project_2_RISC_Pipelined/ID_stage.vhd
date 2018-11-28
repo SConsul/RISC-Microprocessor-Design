@@ -51,25 +51,33 @@ end component;
 signal RF_enable, mem_write, ALU2_a_mux,flagc_en,flagz_en: std_logic;
 signal ALU2_op,RF_D3_mux,RF_a3_mux: std_logic_vector(1 downto 0);
 signal PE2_mux_op: std_logic_vector(7 downto 0);
-
+signal dummy_ip8, dummy_ip19, dummy_ip18, dummy_ip10, dummy_ip9: std_logic;
 begin
+
+dummy_ip8 <= (nullify_ID_control or not(IF_reg_op(0)));
+dummy_ip19 <=(RF_enable and not(nullify_ID_control));
+dummy_ip18 <= (mem_write and not(nullify_ID_control));
+dummy_ip10 <= (flagc_en and not(nullify_ID_control));
+dummy_ip9 <= (flagz_en and not(nullify_ID_control));
+
 a: ID_interface_reg port map(
 		EN=>EN_id_control,
 		EN_8bits=>EN_8bits_control,
 		reset=>reset,
 		CLK=>clock,
 		ip(51 downto 20)=>IF_reg_op(32 downto 1),
-		ip(8)=>(nullify_ID_control or not(IF_reg_op(0))),
-		ip(7 downto 0)=>PE2_mux_op,
-		ip(19)=>(RF_enable and not(nullify_ID_control)),
-		ip(18)=>(mem_write and not(nullify_ID_control)),
+		ip(19)=>dummy_ip19,
+		ip(18)=>dummy_ip18,
 		ip(17 downto 16)=>ALU2_op,
 		ip(15)=>ALU2_a_mux,
 		ip(14 downto 13)=>RF_a3_mux,
 		ip(12 downto 11)=>RF_D3_mux,
-		op=>ID_reg_op,
-		ip(10)=>(flagc_en and not(nullify_ID_control)),
-		ip(9)=>(flagz_en and not(nullify_ID_control)));
+		ip(10)=>dummy_ip10,
+		ip(9)=>dummy_ip9,
+		ip(8)=>dummy_ip8,
+		ip(7 downto 0)=>PE2_mux_op,		
+		op=>ID_reg_op);
+		
 
 mem_id_08(15 downto 7)<=IF_reg_op(9 downto 1);
 mem_id_08(6 downto 0)<="0000000";

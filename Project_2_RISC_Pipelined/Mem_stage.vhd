@@ -12,7 +12,7 @@ end entity;
 
 architecture mem of memory_data is
   type RAM_array is array (0 to 2**4-1) of std_logic_vector (15 downto 0);
-	signal RAM : RAM_array:= (X"3115",X"32C7",X"0050",X"039A",others=>X"0000");
+	signal RAM : RAM_array:= (X"3001",X"3203",X"3605",X"700A",X"6014",X"C283",others=>X"0000");
 begin
   process(clk, mem_write, data_in, address, RAM)
     begin
@@ -89,9 +89,11 @@ end component;
 
 signal memd_z_flag,memd_muxz_output: std_logic;
 signal mem_muxaddr_op ,mem_data_out_sig,mem_mux_datain_op: std_logic_vector(15 downto 0);
+signal dummy_mem_write: std_logic;
 begin
+dummy_mem_write<=(EX_reg_op(60) and not(EX_reg_op(0)));
 
-a: memory_data port map(clk=>clock,mem_write=>(EX_reg_op(60) and not(EX_reg_op(0))),address=>mem_muxaddr_op,data_in=>mem_mux_datain_op,data_out=>mem_data_out_sig);
+a: memory_data port map(clk=>clock,mem_write=>dummy_mem_write,address=>mem_muxaddr_op,data_in=>mem_mux_datain_op,data_out=>mem_data_out_sig);
 
 b:mem_interface_reg port map(EN=>'1',CLK=>clock,reset=>reset,ip(76 downto 61)=>EX_reg_op(93 downto 78),ip(60 downto 45)=>EX_reg_op(77 downto 62),ip(44 downto 29)=>mem_data_out_sig,ip(28 downto 13)=>EX_reg_op(53 downto 38),ip(5 downto 3)=>EX_reg_op(5 downto 3),ip(2)=>EX_reg_op(2),ip(1)=>memd_muxz_output,ip(0)=>nullify_control_mem,ip(12)=>EX_reg_op(61),ip(11 downto 6)=>EX_reg_op(59 downto 54),op=>Mem_reg_op);
 

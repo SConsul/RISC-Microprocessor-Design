@@ -5,9 +5,8 @@ use ieee.numeric_std.all;
 entity user_flagz is
 Generic (NUM_BITS : INTEGER :=1);
   port (EN, reset, CLK: in std_logic;
-        ip: in std_logic_vector(NUM_BITS-1 downto 0);
-        op: out std_logic_vector(NUM_BITS-1 downto 0)
-      );
+        ip: in std_logic;
+        op: out std_logic);
 end entity;
 
 architecture reg_arch of user_flagz is
@@ -16,7 +15,7 @@ reg1 : process(CLK, EN, ip)
 begin
   if CLK'event and CLK = '1' then
     if reset = '1' then
-      op(NUM_BITS-1 downto 0) <= (others=>'0');
+      op <= '0';
     elsif EN = '1' then
       op <= ip;
     end if;
@@ -34,9 +33,8 @@ use ieee.numeric_std.all;
 entity user_flagc is
 Generic (NUM_BITS : INTEGER :=1);
   port (EN, reset, CLK: in std_logic;
-        ip: in std_logic_vector(NUM_BITS-1 downto 0);
-        op: out std_logic_vector(NUM_BITS-1 downto 0)
-      );
+        ip: in std_logic;
+        op: out std_logic);
 end entity;
 
 architecture reg_arch of user_flagc is
@@ -45,7 +43,7 @@ reg1 : process(CLK, EN, ip)
 begin
   if CLK'event and CLK = '1' then
     if reset = '1' then
-      op(NUM_BITS-1 downto 0) <= (others=>'0');
+      op<= '0';
     elsif EN = '1' then
       op <= ip;
     end if;

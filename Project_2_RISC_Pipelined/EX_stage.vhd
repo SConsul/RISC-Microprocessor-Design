@@ -228,6 +228,7 @@ signal se6_ex_op: std_logic_vector(15 downto 0);
 signal alu_flagz_sig, alu_flagc_sig: std_logic;
 signal PE1_addr_sig: std_logic_vector(2 downto 0);
 signal EX_reg_op_sig: std_logic_vector(93 downto 0);
+signal dummy_ip61, dummy_ip55, dummy_ip54: std_logic;
 begin
 
 a: ALU_2 port map(alu_op=>OR_reg_op(17 downto 16),alu_a=>alu_a_ip,alu_b=>OR_reg_op(51 downto 36),alu_c=>alu_flagc_sig,alu_z=>alu_flagz_sig,alu_out=>alu2_out_sig );
@@ -235,6 +236,10 @@ a: ALU_2 port map(alu_op=>OR_reg_op(17 downto 16),alu_a=>alu_a_ip,alu_b=>OR_reg_
 b: priority_encoder1 port map (ip=>OR_reg_op(7 downto 0),op_addr=>PE1_addr_sig,update=>PE1_op);
 
 c: SE6_ex port map (ip=>OR_reg_op(73 downto 68),op=>se6_ex_op);
+
+dummy_ip61 <=(RF_write_out and not(nullify_control_ex));
+dummy_ip55 <= (flagc_write_out and not(nullify_control_ex));
+dummy_ip54 <= (flagz_write_out and not(nullify_control_ex));
 
 d: EX_interface_reg port map(
   EN=>'1',
@@ -249,11 +254,11 @@ d: EX_interface_reg port map(
   ip(2)=>alu_flagc_sig,
   ip(1)=>alu_flagz_sig,
   ip(0)=>nullify_control_ex,
-  ip(61)=>(RF_write_out and not(nullify_control_ex)),
+  ip(61)=>dummy_ip61,
   ip(60)=>OR_reg_op(18),
   ip(59 downto 56)=>OR_reg_op(14 downto 11),
-  ip(55)=>(flagc_write_out and not(nullify_control_ex)),
-  ip(54)=>(flagz_write_out and not(nullify_control_ex)),
+  ip(55)=>dummy_ip55,
+  ip(54)=>dummy_ip54,
   op=>EX_reg_op_sig);
 
 PCtoR7 <= EX_reg_op_sig(93 downto 78);
