@@ -29,13 +29,13 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity Top_entity2 is
+entity Top_entity is
 port(
 clock,reset: in std_logic
 );
 end entity;
 
-architecture Behave of Top_entity2 is
+architecture Behave of Top_entity is
 
 component hbit is
 Generic (NUM_BITS : INTEGER := 1);
@@ -143,7 +143,7 @@ component write_control is
 
 port(
 opcode_mem,opcode_EX,opcode_OR: in std_logic_vector(5 downto 0);
-flag_z_ex,flag_c_ex,flag_z_mem,flag_c_mem,flagz_enable_ex,flagc_enable_ex,load_flag_z,nullify_ex,rf_write_or,flagc_write_or,flagz_write_or: in std_logic;
+flag_z_ex,flag_c_ex,flag_z_mem,flag_c_mem,user_flagc,user_flagz,flagz_enable_ex,flagc_enable_ex,flagz_enable_mem,flagc_enable_mem,load_flag_z,nullify_ex,rf_write_or,flagc_write_or,flagz_write_or: in std_logic;
 RF_write_out,flagc_write_out,flagz_write_out,authentic_c_op,authentic_z_op: out std_logic
 );
 
@@ -404,7 +404,11 @@ j:write_control port map(
 					flagc_write_out=>flagc_write_out_sig,
 					flagz_write_out=>flagz_write_out_sig,
 					authentic_c_op=>authentic_c_sig,
-					authentic_z_op=>authentic_z_sig
+					authentic_z_op=>authentic_z_sig,
+					user_flagc=>user_cflag_sig,
+					user_flagz=>user_zflag_sig,
+					flagz_enable_mem=>mem_reg_op_sig(6),
+					flagc_enable_mem=>mem_reg_op_sig(7)
 );
 k:RF_d1_control port map(
 					RS_id1=>RS_id1_sig,

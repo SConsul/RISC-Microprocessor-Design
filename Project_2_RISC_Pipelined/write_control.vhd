@@ -6,7 +6,7 @@ entity write_control is
 
 port(
 opcode_mem,opcode_EX,opcode_OR: in std_logic_vector(5 downto 0);
-flag_z_ex,flag_c_ex,flag_z_mem,flag_c_mem,flagz_enable_ex,flagc_enable_ex,load_flag_z,nullify_ex,rf_write_or,flagc_write_or,flagz_write_or: in std_logic;
+flag_z_ex,flag_c_ex,flag_z_mem,flag_c_mem,user_flagc,user_flagz,flagz_enable_ex,flagc_enable_ex,flagz_enable_mem,flagc_enable_mem,load_flag_z,nullify_ex,rf_write_or,flagc_write_or,flagz_write_or: in std_logic;
 RF_write_out,flagc_write_out,flagz_write_out,authentic_c_op,authentic_z_op: out std_logic
 );
 
@@ -19,19 +19,27 @@ begin
 authentic_c_op<=authentic_c;
 authentic_z_op<=authentic_z;
 -----------------------------------
-process(flag_z_ex,flag_z_mem,opcode_mem,opcode_EX,flagz_enable_ex)
+process(flag_z_ex,flag_z_mem,opcode_mem,opcode_EX,flagz_enable_ex,flagz_enable_mem,user_flagz)
 begin
-	if(((opcode_EX = "000001")or (opcode_EX ="001001")) and (flagz_enable_ex = '0')) then
-		authentic_z<=flag_z_mem;
+	if(flagz_enable_ex = '0') then
+		if (flagz_enable_mem = '0') then
+			authentic_z<=user_flagz;
+		else
+			authentic_z<=flag_z_mem;
+		end if;
 	else
 		authentic_z<=flag_z_ex;
 end if;
 end process;
 
-process(flag_c_ex,flag_c_mem,opcode_mem,opcode_EX,flagc_enable_ex)
+process(flag_c_ex,flag_c_mem,opcode_mem,opcode_EX,flagc_enable_ex,flagc_enable_mem,user_flagc)
 begin
-	if(((opcode_EX = "000010")or (opcode_EX ="001010")) and (flagc_enable_ex = '0')) then
-		authentic_c<=flag_c_mem;
+	if(flagc_enable_ex = '0') then
+		if (flagc_enable_mem = '0') then
+			authentic_c<=user_flagc;
+		else
+			authentic_c<=flag_c_mem;
+		end if;
 	else
 		authentic_c<=flag_c_ex;
 end if;
