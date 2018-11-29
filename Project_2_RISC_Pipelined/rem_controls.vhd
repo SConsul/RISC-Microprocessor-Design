@@ -18,7 +18,17 @@ signal pc_control_lmlhi,pc_control_smlhi:std_logic_vector(2 downto 0);
 begin
 process(ID_opcode,OR_opcode,EX_opcode,mem_opcode,hbit_op,IF_opcode,dest_EX,dest_OR,dest_IF,dest_ID,RS_id1,nullify_ID,nullify_OR,nullify_EX,alu2z_flag,authentic_c,authentic_z,validate_IF,PE1_op,PE2_op,pc_control_lmlhi,pc_control_smlhi,RS_id2)
 begin
-	if(((EX_opcode(5 downto 2) = "0100") or (EX_opcode(5 downto 2) = "0110")) and (dest_EX = "111") and (nullify_EX = '0')) then
+if ((IF_opcode(5 downto 2) = "0011") and (dest_IF = "111") and (validate_IF = '1')) then
+			PC_en_control <= '1';
+			ID_en<='1';
+			ID_en_8bits<='1';
+			PC_control <= "101"; --pc_control_lmlhi and pc_control_smlhi will be 101 if lhi in IF and not  nullified with dest R7 else 000
+			validate_control_if<='0';
+			nullify_control_id<=not validate_IF;
+			nullify_control_or<=nullify_ID;
+			nullify_control_ex<=nullify_OR;
+			nullify_control_mem<=nullify_EX;
+	elsif(((EX_opcode(5 downto 2) = "0100") or (EX_opcode(5 downto 2) = "0110")) and (dest_EX = "111") and (nullify_EX = '0')) then
 			PC_control <= "001";
 			PC_en_control <= '1';
 			validate_control_if<='0';
@@ -59,7 +69,7 @@ begin
 			ID_en<='1';
 			ID_en_8bits<='1';
 	elsif ((OR_opcode(5 downto 2) = "1100") and (nullify_OR = '0') and (alu2z_flag = '1')) then
-			PC_control <= "110";
+			PC_control <= "011";
 			PC_en_control <= '1';
 			validate_control_if<='0';
 			nullify_control_id<='1';
@@ -95,12 +105,22 @@ begin
 				nullify_control_mem<=nullify_EX;
 			elsif((ID_opcode(5 downto 2) = "0110") and (nullify_ID = '0') and (PE1_op /= "00000000")) then
 				PC_en_control <= '0';
-				ID_en<='0';
-				ID_en_8bits<='0';
+				ID_en<=not(hbit_op);
+				ID_en_8bits<=not(hbit_op);
 				PC_control <= pc_control_lmlhi;
 				validate_control_if<='1';
 				nullify_control_id<=not validate_IF;
 				nullify_control_or<='1';
+				nullify_control_ex<=nullify_OR;
+				nullify_control_mem<=nullify_EX;
+			elsif ((IF_opcode(5 downto 2) = "0110") and (validate_IF = '1')) then
+				PC_en_control <= '0';
+				ID_en<='1';
+				ID_en_8bits<='1';
+				PC_control <= "000";
+				validate_control_if<='1';
+				nullify_control_id<=not validate_IF;
+				nullify_control_or<=nullify_ID;
 				nullify_control_ex<=nullify_OR;
 				nullify_control_mem<=nullify_EX;
 			else
@@ -156,8 +176,8 @@ begin
 				nullify_control_ex<=nullify_OR;
 				nullify_control_mem<=nullify_EX;
 			end if;
-	elsif(((IF_opcode(5 downto 2) = "0011") and (dest_IF = "111") and (validate_IF = '0')) or ((OR_opcode(5 downto 2) = "0100") and (nullify_OR = '0') and (RS_id1 = dest_OR))) then
-		if ((IF_opcode(5 downto 2) = "0011") and (dest_IF = "111") and (validate_IF = '0')) then
+	elsif(((IF_opcode(5 downto 2) = "0011") and (dest_IF = "111") and (validate_IF = '1')) or ((OR_opcode(5 downto 2) = "0100") and (nullify_OR = '0') and (RS_id1 = dest_OR))) then
+		if ((IF_opcode(5 downto 2) = "0011") and (dest_IF = "111") and (validate_IF = '1')) then
 			PC_en_control <= '1';
 			ID_en<='1';
 			ID_en_8bits<='1';
@@ -235,7 +255,7 @@ end process;
 
 process(IF_opcode,dest_IF,validate_IF)
 begin
-	if ((IF_opcode(5 downto 2) = "0011") and (dest_IF = "111") and (validate_IF = '0')) then
+	if ((IF_opcode(5 downto 2) = "0011") and (dest_IF = "111") and (validate_IF = '1')) then
 		pc_control_lmlhi <= "101";
 		pc_control_smlhi <= "101";
 	else
