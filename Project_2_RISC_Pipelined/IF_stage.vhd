@@ -8,8 +8,8 @@ entity memory_instruction is
       data_out: out std_logic_vector(15 downto 0));
 end entity;
 architecture mem of memory_instruction is
-  type RAM_array is array (0 to 2**4-1) of std_logic_vector (15 downto 0);
-	signal RAM : RAM_array:= (X"31FF",X"3202",X"0050",X"029A",others=>X"0000");
+  type RAM_array is array (0 to 2**16-1) of std_logic_vector (15 downto 0);
+	signal RAM : RAM_array:= (X"3600",X"4201",X"4401",X"c286",X"3601",X"3601",X"3601",X"3601",X"3601",X"37ff",X"3801",others=>X"0000");
 begin
       data_out <= RAM(to_integer(unsigned(address)));
 end architecture mem;
@@ -92,7 +92,7 @@ entity IF_stage is
   port(reset,clock,validate_control,PC_en_control: in std_logic;
   PC_control: in std_logic_vector(2 downto 0);
   IF_reg_op : out std_logic_vector (32 downto 0);
-  alu3_out,alu2_out,memd_out,RF_d2,memid_08:in std_logic_vector(15 downto 0)
+  alu3_ex,alu3_out,alu2_out,memd_out,RF_d2,memid_08:in std_logic_vector(15 downto 0)
   );
 end entity;
 architecture arc of IF_stage is
@@ -152,6 +152,8 @@ process(PC_control,ALU1_out,memd_out,alu2_out,alu3_out,RF_d2,memid_08)
     PC_in<=RF_d2;
   elsif (PC_control = "101") then
     PC_in<=memid_08;
+  elsif (PC_control = "110") then
+    PC_in<=alu3_ex;
   else
     PC_in<=ALU1_out;
   end if;

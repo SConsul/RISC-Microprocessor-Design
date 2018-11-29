@@ -29,13 +29,13 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity Top_entity is
+entity Top_entity2 is
 port(
 clock,reset: in std_logic
 );
 end entity;
 
-architecture Behave of Top_entity is
+architecture Behave of Top_entity2 is
 
 component hbit is
 Generic (NUM_BITS : INTEGER := 1);
@@ -51,7 +51,7 @@ component IF_stage is
   port(reset,clock,validate_control,PC_en_control: in std_logic;
   PC_control: in std_logic_vector(2 downto 0);
   IF_reg_op : out std_logic_vector (32 downto 0);
-  alu3_out,alu2_out,memd_out,RF_d2,memid_08:in std_logic_vector(15 downto 0)
+  alu3_ex,alu3_out,alu2_out,memd_out,RF_d2,memid_08:in std_logic_vector(15 downto 0)
   );
 end component;
 --------------------
@@ -84,7 +84,7 @@ port (OR_reg_op: in std_logic_vector(99 downto 0);
 	 PE1_op: out std_logic_vector (7 downto 0);
 	 nullify_control_ex,reset,clock:in std_logic;
 	 EX_reg_op: out std_logic_vector(93 downto 0);
-	 alu2_out,PCtoR7: out std_logic_vector(15 downto 0);
+	 alu3_ex,alu2_out,PCtoR7: out std_logic_vector(15 downto 0);
 	 nullify_ex,alu2_z: out std_logic
 
 );
@@ -224,7 +224,8 @@ signal alu3_out_sig,
 	   memid_08_sig,
 	   PCtoR7_sig,
 	   left_shifted_sig,
-	   PC_mem_sig: std_logic_vector(15 downto 0);
+	   PC_mem_sig,
+		alu3_ex_sig: std_logic_vector(15 downto 0);
 signal RF_a3_control_sig,RF_d3_control_sig: std_logic_vector(1 downto 0);
 signal IF_reg_op_sig: std_logic_vector(32 downto 0);
 signal ID_reg_op_sig: std_logic_vector(51 downto 0);
@@ -244,7 +245,8 @@ a: IF_stage port map(reset=>reset,
 					alu2_out=>alu2_out_sig,
 					memd_out=>memd_sig,
 					RF_d2=>RF_d2_sig,
-					memid_08=>memid_08_sig
+					memid_08=>memid_08_sig,
+					alu3_ex=>alu3_ex_sig
 					);
 
 b: ID_stage port map(reset=>reset,
@@ -309,7 +311,8 @@ d:EX_stage port map (
 					alu2_out=>alu2_out_sig,
 					PCtoR7=>PCtoR7_sig,
 					nullify_ex=>nullify_ex_sig,
-					alu2_z=>alu2z_sig
+					alu2_z=>alu2z_sig,
+					alu3_ex=>alu3_ex_sig
 );
 
 e:Mem_stage port map(
@@ -450,7 +453,7 @@ l: RF_d2_control port map(
 );
 m: hbit port map(
 					EN=>'1',
-					reset=>reset, 
+					reset=>reset,
 					CLK=>clock,
 			        ip=>hbit_signal,
 			        op=>hbit_op
@@ -527,10 +530,10 @@ end process;
 
 process(EX_reg_op_sig)
 begin
--- CHECK THIS!! 
+-- CHECK THIS!!
   case(EX_reg_op_sig(77 downto 74)) is
     when "0000" =>
-      RD_ex_sig <= EX_reg_op_sig(67 downto 65); 
+      RD_ex_sig <= EX_reg_op_sig(67 downto 65);
     when "0010" =>
       RD_ex_sig <= EX_reg_op_sig(67 downto 65);
     when "0001" =>
@@ -576,4 +579,3 @@ end if;
 end process;
 
 end Behave;
-

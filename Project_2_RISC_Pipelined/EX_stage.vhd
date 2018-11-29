@@ -166,7 +166,7 @@ port (OR_reg_op: in std_logic_vector(99 downto 0);
 	 PE1_op: out std_logic_vector (7 downto 0);
 	 nullify_control_ex,reset,clock:in std_logic;
 	 EX_reg_op: out std_logic_vector(93 downto 0);
-	 alu2_out,PCtoR7: out std_logic_vector(15 downto 0);
+	 alu3_ex,alu2_out,PCtoR7: out std_logic_vector(15 downto 0);
 	 nullify_ex,alu2_z: out std_logic
 
 );
@@ -266,7 +266,7 @@ nullify_ex <= EX_reg_op_sig(0);
 EX_reg_op <= EX_reg_op_sig;
 alu2_z<=alu_flagz_sig;
 alu2_out<=alu2_out_sig;
-
+alu3_ex<=OR_reg_op(35 downto 20);
 process(OR_reg_op,se6_ex_op)
 begin
 if(OR_reg_op(15) = '0') then
