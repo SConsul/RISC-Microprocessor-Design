@@ -9,7 +9,7 @@ entity memory_instruction is
 end entity;
 architecture mem of memory_instruction is
   type RAM_array is array (0 to 2**16-1) of std_logic_vector (15 downto 0);
-	signal RAM : RAM_array:= (X"3600",X"4201",X"4401",X"c286",X"3601",X"3601",X"3601",X"3601",X"3601",X"37ff",X"3801",others=>X"0000");
+	signal RAM : RAM_array:= (X"3201",X"8205",X"0000",X"0000",X"3401",X"3601",X"3801",others=>X"0000");
 begin
       data_out <= RAM(to_integer(unsigned(address)));
 end architecture mem;

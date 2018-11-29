@@ -68,7 +68,7 @@ begin
 			nullify_control_mem<=nullify_EX;
 			ID_en<='1';
 			ID_en_8bits<='1';
-	elsif (((ID_opcode(5 downto 2) = "1000") or (ID_opcode(5 downto 2) = "1001")) and (dest_ID = "111") and (nullify_ID = '0')) then
+	elsif (((ID_opcode(5 downto 2) = "1000") or (ID_opcode(5 downto 2) = "1001")) and (nullify_ID = '0')) then
 			if (ID_opcode(5 downto 2) = "1000") then
 				PC_control <= "011";
 			else
