@@ -19,7 +19,7 @@ begin
 authentic_c_op<=authentic_c;
 authentic_z_op<=authentic_z;
 -----------------------------------
-process(flag_z_ex,flag_z_mem,opcode_mem,opcode_EX,flagz_enable_ex,flagz_enable_mem,user_flagz)
+process(flag_z_ex,flag_z_mem,opcode_mem,opcode_EX,flagz_enable_ex,flagz_enable_mem,user_flagz,load_flag_z)
 begin
 	if(flagz_enable_ex = '0') then
 		if (flagz_enable_mem = '0') then
@@ -27,8 +27,8 @@ begin
 		else
 			authentic_z<=flag_z_mem;
 		end if;
-	else
-		authentic_z<=flag_z_ex;
+  else
+	 authentic_z<=flag_z_ex;
 end if;
 end process;
 
@@ -47,8 +47,9 @@ end process;
 
 process(authentic_c,authentic_z,opcode_EX,opcode_OR,load_flag_z,nullify_ex,rf_write_or,flagc_write_or,flagz_write_or)
 begin
-	if((((opcode_OR = "000001") or (opcode_OR = "001001")) and (authentic_z = '0')) or (((opcode_OR = "000010") or (opcode_OR = "001010")) and (authentic_c = '0')) or ((opcode_EX(5 downto 2) = "0100") and ((opcode_OR = "000001") or (opcode_OR = "001001"))
-	 and (load_flag_z = '0') and (nullify_ex = '0'))) then
+	if((((opcode_OR = "000001") or (opcode_OR = "001001")) and (authentic_z = '0') and not (opcode_EX(5 downto 2) = "0100"))
+	or (((opcode_OR = "000010") or (opcode_OR = "001010")) and (authentic_c = '0'))
+	or ((opcode_EX(5 downto 2) = "0100") and ((opcode_OR = "000001") or (opcode_OR = "001001")) and (load_flag_z = '0') and (nullify_ex = '0'))) then
 		RF_write_out<='0';
 		flagc_write_out<='0';
 		flagz_write_out<='0';

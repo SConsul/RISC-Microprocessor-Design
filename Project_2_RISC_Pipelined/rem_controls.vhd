@@ -87,7 +87,7 @@ begin
 			ID_en_8bits<='1';
 			IF_en<='1';
 	elsif ((OR_opcode(5 downto 2) = "1100") and (nullify_OR = '0') and (alu2z_flag = '1')) then
-			PC_control <= "110";
+			PC_control <= "011";
 			PC_en_control <= '1';
 			validate_control_if<='0';
 			nullify_control_id<='1';
@@ -128,8 +128,8 @@ begin
 				IF_en<='1';
 			elsif((OR_intermediate_reg(35 downto 32) = "0110") and (OR_intermediate_reg(8) = '0') and (PE1_op /= "00000000")) then
 				PC_en_control <= '0';
-				ID_en<='0';
-				ID_en_8bits<='0';
+				ID_en<=not(hbit_op);
+				ID_en_8bits<=not(hbit_op);
 				PC_control <= pc_control_lmlhi;
 				validate_control_if<='1';
 				nullify_control_id<=not validate_IF;
