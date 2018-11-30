@@ -12,7 +12,7 @@ end entity;
 
 architecture mem of memory_data is
   type RAM_array is array (0 to 2**16-1) of std_logic_vector (15 downto 0);
-	signal RAM : RAM_array:= (X"0004",X"3203",X"0000",X"0F0F",X"6014",X"C283",X"0101", X"F0F0",others=>X"0000");
+	signal RAM : RAM_array:= (X"3201",X"3603",X"3A05",X"702A",X"6058",X"C285",others=>X"0000");
 begin
   process(clk, mem_write, data_in, address, RAM)
     begin

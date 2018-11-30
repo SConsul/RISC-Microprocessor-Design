@@ -499,6 +499,8 @@ begin
       RD_or_sig <= OR_reg_op_sig(79 downto 77);
     when "0011" =>
       RD_or_sig <= OR_reg_op_sig(79 downto 77);
+    when "0100" =>
+      RD_or_sig <= OR_reg_op_sig(79 downto 77);
     when others =>
       RD_or_sig <= "000";
   end case;
