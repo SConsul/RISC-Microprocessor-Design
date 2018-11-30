@@ -186,8 +186,8 @@ begin
 				IF_en<='1';
 			end if;
 	elsif(((OR_opcode(5 downto 2) = "0100") and (nullify_OR = '0') and ((RS_id1 = dest_OR) or (RS_id2 = dest_OR))
-	and ((ID_opcode(5 downto 2) = "0000") or (ID_opcode(5 downto 2) = "0010") or (ID_opcode(5 downto 2) = "0001")))) then
-		if((OR_opcode(5 downto 2) = "0100") and (nullify_OR = '0') and (RS_id1 = dest_OR)and ((ID_opcode(5 downto 2) = "0000") or (ID_opcode(5 downto 2) = "0010") or (ID_opcode(5 downto 2) = "0001"))) then
+	and ((ID_opcode(5 downto 2) = "0000") or (ID_opcode(5 downto 2) = "0010") or (ID_opcode(5 downto 2) = "0001") or (ID_opcode(5 downto 2) = "0101") ))) then
+		if((OR_opcode(5 downto 2) = "0100") and (nullify_OR = '0') and (RS_id1 = dest_OR)and ((ID_opcode(5 downto 2) = "0000") or (ID_opcode(5 downto 2) = "0010") or (ID_opcode(5 downto 2) = "0001")or (ID_opcode(5 downto 2) = "0101"))) then
 			PC_en_control <= '0';
 			ID_en<='0';
 			ID_en_8bits<='0';
@@ -210,7 +210,7 @@ begin
 			nullify_control_mem<=nullify_EX;
 			IF_en<='1';
 		end if;
-		if((OR_opcode(5 downto 2) = "0100") and (nullify_OR = '0') and (RS_id2 = dest_OR)and ((ID_opcode(5 downto 2) = "0000") or (ID_opcode(5 downto 2) = "0010") or (ID_opcode(5 downto 2) = "0001")))then
+		if((OR_opcode(5 downto 2) = "0100") and (nullify_OR = '0') and (RS_id2 = dest_OR)and ((ID_opcode(5 downto 2) = "0000") or (ID_opcode(5 downto 2) = "0010") or (ID_opcode(5 downto 2) = "0101") ))then
 			PC_en_control <= '0';
 			ID_en<='0';
 			ID_en_8bits<='0';
