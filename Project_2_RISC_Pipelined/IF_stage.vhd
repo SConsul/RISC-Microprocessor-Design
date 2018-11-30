@@ -140,12 +140,8 @@ d: IF_interface_reg port map(
 		ip(16 downto 1)=>mem_instr_out,
 		ip(0)=>validate_control,
 		op=>IF_reg_op);
-<<<<<<< HEAD
 
-process(PC_control,ALU1_out,memd_out,alu3_ex,alu2_out,alu3_out,RF_d2,memid_08)
-=======
 process(PC_control,ALU1_out,memd_out,alu2_out,alu3_out,RF_d2,memid_08,alu3_ex)
->>>>>>> copy
   begin
   if (PC_control = "000") then
     PC_in<=ALU1_out;
