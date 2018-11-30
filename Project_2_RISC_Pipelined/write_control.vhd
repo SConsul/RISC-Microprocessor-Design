@@ -47,7 +47,8 @@ end process;
 
 process(authentic_c,authentic_z,opcode_EX,opcode_OR,load_flag_z,nullify_ex,rf_write_or,flagc_write_or,flagz_write_or)
 begin
-	if((((opcode_OR = "000001") or (opcode_OR = "001001")) and (authentic_z = '0')) or (((opcode_OR = "000010") or (opcode_OR = "001010")) and (authentic_c = '0')) or ((opcode_EX(5 downto 2) = "0100") and ((opcode_OR = "000001") or (opcode_OR = "001001")) and (load_flag_z = '0') and (nullify_ex = '0'))) then
+	if((((opcode_OR = "000001") or (opcode_OR = "001001")) and (authentic_z = '0')) or (((opcode_OR = "000010") or (opcode_OR = "001010")) and (authentic_c = '0')) or ((opcode_EX(5 downto 2) = "0100") and ((opcode_OR = "000001") or (opcode_OR = "001001"))
+	 and (load_flag_z = '0') and (nullify_ex = '0'))) then
 		RF_write_out<='0';
 		flagc_write_out<='0';
 		flagz_write_out<='0';
@@ -58,6 +59,3 @@ begin
 	end if;
 end process;
 end Behave;
-
-
-

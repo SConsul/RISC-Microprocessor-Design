@@ -7,7 +7,7 @@ port(
 RS_id2,RD_or,RD_ex,RD_mem: in std_logic_vector(2 downto 0);
 ID_opcode: in std_logic_vector(3 downto 0);
 EX_opcode,OR_opcode,mem_opcode: in std_logic_vector(5 downto 0);
-cflag_ex,cflag_mem,zflag_ex,zflag_mem,nullify_or,nullify_id,nullify_ex,nullify_mem,user_cflag,user_zflag: in std_logic;
+authentic_c,authentic_z,nullify_or,nullify_id,nullify_ex,nullify_mem,user_cflag,user_zflag: in std_logic;
 RF_d2_mux_control: out std_logic_vector(3 downto 0)
 );
 
@@ -15,7 +15,7 @@ end entity;
 
 architecture Behave of RF_d2_control is
 begin
-process(RS_id2,RD_or,RD_ex,RD_mem,ID_opcode,EX_opcode,OR_opcode,mem_opcode,cflag_ex,cflag_mem,zflag_ex,zflag_mem,nullify_or,nullify_id,nullify_ex,nullify_mem,user_zflag,user_cflag)
+process(RS_id2,RD_or,RD_ex,RD_mem,ID_opcode,EX_opcode,OR_opcode,mem_opcode,authentic_c,authentic_z,nullify_or,nullify_id,nullify_ex,nullify_mem,user_zflag,user_cflag)
 begin
 if(((ID_opcode = "0000") or (ID_opcode = "0001") or
     (ID_opcode = "0010") or (ID_opcode = "0101") or
@@ -27,7 +27,7 @@ if((((OR_opcode(5 downto 2) = "0000") or (OR_opcode(5 downto 2) = "0001") or
 
 		if((OR_opcode(5 downto 0) = "000000") or (OR_opcode(5 downto 2) = "0001") or (OR_opcode(5 downto 0) = "001000")) then
 			RF_d2_mux_control<="0001";
-		elsif((((OR_opcode(5 downto 0) = "000010") or (OR_opcode(5 downto 0) = "001010")) and (cflag_ex = '1')) or (((OR_opcode(5 downto 0) = "000001") or (OR_opcode(5 downto 0) = "001001"))and (zflag_ex = '1')) ) then
+		elsif((((OR_opcode(5 downto 0) = "000010") or (OR_opcode(5 downto 0) = "001010")) and (authentic_c= '1')) or (((OR_opcode(5 downto 0) = "000001") or (OR_opcode(5 downto 0) = "001001"))and (authentic_z= '1')) ) then
 			RF_d2_mux_control<="0001";
 		elsif (OR_opcode(5 downto 2) = "0011") then
 			RF_d2_mux_control<="0110";
@@ -41,7 +41,7 @@ elsif((((EX_opcode(5 downto 2) = "0000") or (EX_opcode(5 downto 2) = "0001") or
           (RS_id2 = RD_ex)) then
 		if((EX_opcode(5 downto 0) = "000000") or (EX_opcode(5 downto 2) = "0001") or (EX_opcode(5 downto 0) = "001000")) then
 			RF_d2_mux_control<="0011";
-		elsif((((EX_opcode(5 downto 0) = "000010") or (EX_opcode(5 downto 0) = "001010")) and (cflag_mem = '1')) or (((EX_opcode(5 downto 0) = "000001") or (EX_opcode(5 downto 0) = "001001"))and (zflag_mem = '1'))) then
+		elsif((((EX_opcode(5 downto 0) = "000010") or (EX_opcode(5 downto 0) = "001010")) and (authentic_c = '1')) or (((EX_opcode(5 downto 0) = "000001") or (EX_opcode(5 downto 0) = "001001"))and (authentic_z = '1'))) then
 			RF_d2_mux_control<="0011";
 		elsif(EX_opcode(5 downto 2) = "0100") then
 			RF_d2_mux_control<="0010";

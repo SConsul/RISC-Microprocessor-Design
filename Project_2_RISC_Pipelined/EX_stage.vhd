@@ -267,6 +267,7 @@ EX_reg_op <= EX_reg_op_sig;
 alu2_z<=alu_flagz_sig;
 alu2_out<=alu2_out_sig;
 alu3_ex<=OR_reg_op(35 downto 20);
+
 process(OR_reg_op,se6_ex_op)
 begin
 if(OR_reg_op(15) = '0') then

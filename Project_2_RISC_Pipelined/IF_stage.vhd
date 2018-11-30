@@ -9,11 +9,11 @@ entity memory_instruction is
 end entity;
 architecture mem of memory_instruction is
   type RAM_array is array (0 to 2**16-1) of std_logic_vector (15 downto 0);
-	signal RAM : RAM_array:= (X"3201",X"8205",X"0000",X"0000",X"3401",X"3601",X"3801",others=>X"0000");
+	signal RAM : RAM_array:= (X"3000",X"607F",others=>X"0000");
 begin
       data_out <= RAM(to_integer(unsigned(address)));
 end architecture mem;
-------------------------------------------------------------------------
+-------------------------------------------------------------------------
 library ieee;
 use ieee.std_logic_1164.all;
 
@@ -89,7 +89,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 entity IF_stage is
-  port(reset,clock,validate_control,PC_en_control: in std_logic;
+  port(reset,clock,validate_control,PC_en_control,IF_en: in std_logic;
   PC_control: in std_logic_vector(2 downto 0);
   IF_reg_op : out std_logic_vector (32 downto 0);
   alu3_ex,alu3_out,alu2_out,memd_out,RF_d2,memid_08:in std_logic_vector(15 downto 0)
@@ -126,19 +126,22 @@ Generic (NUM_BITS : INTEGER := 33);
 end component;
 signal PC_out,PC_in: std_logic_vector(15 downto 0);
 signal ALU1_out,mem_instr_out: std_logic_vector(15 downto 0);
+
 begin
+
 a: PC port map(EN => PC_en_control,CLK=>clock,reset=>reset,ip=>PC_in,op=>PC_out);
 b: memory_instruction port map(address=>PC_out,data_out=>mem_instr_out);
 c: ALU_1 port map(alu_in=>PC_out,alu_out=>ALU1_out);
 d: IF_interface_reg port map(
-		EN=>'1',
+		EN=>IF_en,
 		reset=>reset,
 		CLk=>clock,
 		ip(32 downto 17)=>PC_out,
 		ip(16 downto 1)=>mem_instr_out,
 		ip(0)=>validate_control,
 		op=>IF_reg_op);
-process(PC_control,ALU1_out,memd_out,alu2_out,alu3_out,RF_d2,memid_08)
+
+process(PC_control,ALU1_out,memd_out,alu3_ex,alu2_out,alu3_out,RF_d2,memid_08)
   begin
   if (PC_control = "000") then
     PC_in<=ALU1_out;
@@ -158,5 +161,6 @@ process(PC_control,ALU1_out,memd_out,alu2_out,alu3_out,RF_d2,memid_08)
     PC_in<=ALU1_out;
   end if;
 end process;
-end arc;
 
+
+end arc;

@@ -227,7 +227,7 @@ begin
 with rf_a1 select
  rf_d1 <=   "0000000000000000" when "111",
           reg_out(to_integer(unsigned(rf_a1))) when others;
-			 
+
 with rf_a2 select
  rf_d2 <=   "0000000000000000" when "111",
           reg_out(to_integer(unsigned(rf_a2))) when others;
@@ -312,6 +312,7 @@ entity OR_stage is
     RF_a3_control,RF_d3_control:in std_logic_vector(1 downto 0);
 	 --Check This! Edit: added "in"
     RF_d1_mux_control,RF_d2_mux_control: in std_logic_vector(3 downto 0);
+	 PE2_dest : out std_logic_vector(2 downto 0);
     -----------------------------
 	 ALU3_op,RF_d2_or:out std_logic_vector (15 downto 0)
     );
@@ -388,6 +389,7 @@ dummy_ip19 <= (ID_reg_op(19) and not(nullify_control_OR));
 dummy_ip18 <= (ID_reg_op(18) and not(nullify_control_OR));
 dummy_ip10 <= (ID_reg_op(10) and not(nullify_control_OR));
 dummy_ip9 <= (ID_reg_op(9) and not(nullify_control_OR));
+PE2_dest <= op_PE2;
 
 a: SE6 port map (ip=>ID_reg_op(25 downto 20),op=>SE6_op);
 b: SE9 port map (ip=>ID_reg_op(28 downto 20),op=>SE9_op);
