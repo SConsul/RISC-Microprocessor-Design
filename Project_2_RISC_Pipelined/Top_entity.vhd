@@ -484,7 +484,7 @@ begin
     when "0111" =>
       RS_id2_sig <= PE2_dest_sig;
     when others =>
-      RS_id2_sig <= "000";
+      RS_id2_sig <= "111";
   end case;
 end process;
 
@@ -518,6 +518,8 @@ begin
       RD_ex_sig <= EX_reg_op_sig(73 downto 71);
     when "0100" =>
       RD_ex_sig <= EX_reg_op_sig(73 downto 71);
+    when "0110" =>
+      RD_ex_sig <= EX_reg_op_sig(5 downto 3);
     when others =>
       RD_ex_sig <= "000";
   end case;

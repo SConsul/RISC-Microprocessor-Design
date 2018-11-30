@@ -37,13 +37,13 @@ if((((OR_opcode(5 downto 2) = "0000") or (OR_opcode(5 downto 2) = "0001") or
 
 elsif((((EX_opcode(5 downto 2) = "0000") or (EX_opcode(5 downto 2) = "0001") or
           (EX_opcode(5 downto 2) = "0010") or (EX_opcode(5 downto 2) = "0100") or
-          (EX_opcode(5 downto 2) = "0011")) and (nullify_ex  = '0')) and
+          (EX_opcode(5 downto 2) = "0011") or (EX_opcode(5 downto 2) = "0110")) and (nullify_ex  = '0')) and
           (RS_id2 = RD_ex)) then
 		if((EX_opcode(5 downto 0) = "000000") or (EX_opcode(5 downto 2) = "0001") or (EX_opcode(5 downto 0) = "001000")) then
 			RF_d2_mux_control<="0011";
 		elsif((((EX_opcode(5 downto 0) = "000010") or (EX_opcode(5 downto 0) = "001010")) and (authentic_c = '1')) or (((EX_opcode(5 downto 0) = "000001") or (EX_opcode(5 downto 0) = "001001"))and (authentic_z = '1'))) then
 			RF_d2_mux_control<="0011";
-		elsif(EX_opcode(5 downto 2) = "0100") then
+		elsif((EX_opcode(5 downto 2) = "0100") or EX_opcode(5 downto 2) = "0110") then
 			RF_d2_mux_control<="0010";
 		elsif (EX_opcode(5 downto 2) = "0011") then
 			RF_d2_mux_control<="0111";

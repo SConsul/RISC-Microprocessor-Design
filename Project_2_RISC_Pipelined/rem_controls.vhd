@@ -114,7 +114,7 @@ begin
 			IF_en<='1';
 	elsif (((EX_intermediate_reg(83 downto 80) = "0110") and (EX_intermediate_reg(8) = '0') and (PE1_op = "00000000"))
 	 or ((ID_intermediate_reg(16 downto 13) = "0110") and (ID_intermediate_reg(0) = '1'))
-	 or ((OR_intermediate_reg(35 downto 32) = "0110") and (OR_intermediate_reg(8) = '0') and (PE1_op = "00000000"))) then
+	 or ((OR_intermediate_reg(35 downto 32) = "0110") and (OR_intermediate_reg(8) = '0') and ((PE1_op /= "00000000") or (PE2_op /= "00000000")))) then
 			if((EX_intermediate_reg(83 downto 80) = "0110") and (EX_intermediate_reg(8) = '0') and (PE1_op = "00000000")) then
 				PC_en_control <= '1';
 				ID_en<='1';
@@ -126,14 +126,14 @@ begin
 				nullify_control_ex<=nullify_OR;
 				nullify_control_mem<=nullify_EX;
 				IF_en<='1';
-			elsif((OR_intermediate_reg(35 downto 32) = "0110") and (OR_intermediate_reg(8) = '0') and (PE1_op /= "00000000")) then
+			elsif((OR_intermediate_reg(35 downto 32) = "0110") and (OR_intermediate_reg(8) = '0') and ((PE1_op /= "00000000") or (PE2_op /= "00000000"))) then
 				PC_en_control <= '0';
 				ID_en<='0';
 				ID_en_8bits<='0';
 				PC_control <= pc_control_lmlhi;
 				validate_control_if<='1';
 				nullify_control_id<=not validate_IF;
-				nullify_control_or<='1';
+				nullify_control_or<='0';
 				nullify_control_ex<=nullify_OR;
 				nullify_control_mem<=nullify_EX;
 				IF_en<='1';
