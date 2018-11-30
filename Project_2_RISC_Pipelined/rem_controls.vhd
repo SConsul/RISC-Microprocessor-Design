@@ -87,7 +87,7 @@ begin
 			ID_en_8bits<='1';
 			IF_en<='1';
 	elsif ((OR_opcode(5 downto 2) = "1100") and (nullify_OR = '0') and (alu2z_flag = '1')) then
-			PC_control <= "011";
+			PC_control <= "110";
 			PC_en_control <= '1';
 			validate_control_if<='0';
 			nullify_control_id<='1';
