@@ -378,7 +378,7 @@ component ALU_3 is
 end component;
 
 signal SE6_op,SE9_op,SE_mux_op,RF_D3_sig,alu3_op_sig,R7_op,rf_d1_sig,rf_d2_sig,rf_d1_mux_sig,rf_d2_mux_sig: std_logic_vector (15 downto 0);
-signal RF_a3_sig,RF_a2_sig,op_PE2: std_logic_vector (2 downto 0);
+signal RF_a3_sig,RF_a2_sig,op_PE2,RS1,RS2: std_logic_vector (2 downto 0);
 signal PE1_mux_op: std_logic_vector(7 downto 0);
 signal not_nullify_ex: std_logic;
 signal dummy_ip19,dummy_ip18, dummy_ip10, dummy_ip9: std_logic;
@@ -390,6 +390,8 @@ dummy_ip18 <= (ID_reg_op(18) and not(nullify_control_OR));
 dummy_ip10 <= (ID_reg_op(10) and not(nullify_control_OR));
 dummy_ip9 <= (ID_reg_op(9) and not(nullify_control_OR));
 PE2_dest <= op_PE2;
+RS1 <= ID_reg_op(31 downto 29);
+RS2 <= ID_reg_op(28 downto 26); 
 
 a: SE6 port map (ip=>ID_reg_op(25 downto 20),op=>SE6_op);
 b: SE9 port map (ip=>ID_reg_op(28 downto 20),op=>SE9_op);
@@ -475,10 +477,14 @@ begin
   end process;
 
 process( RF_d1_mux_control,alu2_forward,memd_forward,rf_d1_sig,EX_reg_op_ALU2,mem_reg_op_ALU2,mem_reg_memd
-			,instr08_OR,instr08_EX,instr08_mem)
+			,instr08_OR,instr08_EX,instr08_mem,RS1,ID_reg_op)
 begin
 if(RF_d1_mux_control = "0000") then
-  rf_d1_mux_sig<=rf_d1_sig;
+  if(RS1 /= "111") then
+    rf_d1_mux_sig<=rf_d1_sig;
+  else
+    rf_d1_mux_sig<=ID_reg_op(51 downto 36);
+	end if;
 elsif(RF_d1_mux_control = "0001") then
   rf_d1_mux_sig<=alu2_forward;
 elsif(RF_d1_mux_control = "0010") then
@@ -501,10 +507,14 @@ end if;
 end process;
 
 process( RF_d2_mux_control,alu2_forward,memd_forward,rf_d2_sig,EX_reg_op_ALU2,
-			mem_reg_op_ALU2,mem_reg_memd,instr08_OR,instr08_mem,instr08_EX)
+			mem_reg_op_ALU2,mem_reg_memd,instr08_OR,instr08_mem,instr08_EX,RS2,ID_reg_op)
 begin
 if(RF_d2_mux_control = "0000") then
-  rf_d2_mux_sig<=rf_d2_sig;
+  if(RS2 /= "111") then
+    rf_d2_mux_sig<=rf_d2_sig;
+  else
+    rf_d2_mux_sig<=ID_reg_op(51 downto 36);
+	end if;
 elsif(RF_d2_mux_control = "0001") then
   rf_d2_mux_sig<=alu2_forward;
 elsif(RF_d2_mux_control = "0010") then
