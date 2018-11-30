@@ -9,7 +9,7 @@ entity memory_instruction is
 end entity;
 architecture mem of memory_instruction is
   type RAM_array is array (0 to 2**16-1) of std_logic_vector (15 downto 0);
-	signal RAM : RAM_array:= (X"3201",X"8205",X"0000",X"0000",X"3401",X"3601",X"3801",others=>X"0000");
+	signal RAM : RAM_array:= (X"3201",X"35ff",X"420f",X"2299",X"3801",X"3a01",others=>X"0000");
 begin
       data_out <= RAM(to_integer(unsigned(address)));
 end architecture mem;
@@ -138,7 +138,7 @@ d: IF_interface_reg port map(
 		ip(16 downto 1)=>mem_instr_out,
 		ip(0)=>validate_control,
 		op=>IF_reg_op);
-process(PC_control,ALU1_out,memd_out,alu2_out,alu3_out,RF_d2,memid_08)
+process(PC_control,ALU1_out,memd_out,alu2_out,alu3_out,RF_d2,memid_08,alu3_ex)
   begin
   if (PC_control = "000") then
     PC_in<=ALU1_out;
