@@ -222,11 +222,15 @@ type rin is array(0 to 6) of std_logic_vector(NUM_BITS - 1 downto 0);
 signal reg_in,reg_out : rin;
 --signal r_in: std_logic_vector(15 downto 0);
 signal wr_enable,wr_enable_final: std_logic_vector(6 downto 0);
-
 begin
 
-rf_d1 <= reg_out(to_integer(unsigned(rf_a1)));
-rf_d2 <= reg_out(to_integer(unsigned(rf_a2)));
+with rf_a1 select
+ rf_d1 <=   "0000000000000000" when "111",
+          reg_out(to_integer(unsigned(rf_a1))) when others;
+
+with rf_a2 select
+ rf_d2 <=   "0000000000000000" when "111",
+          reg_out(to_integer(unsigned(rf_a2))) when others;
 
 with rf_a3 select
  wr_enable <=   "0000001" when "000",
@@ -308,6 +312,7 @@ entity OR_stage is
     RF_a3_control,RF_d3_control:in std_logic_vector(1 downto 0);
 	 --Check This! Edit: added "in"
     RF_d1_mux_control,RF_d2_mux_control: in std_logic_vector(3 downto 0);
+	 PE2_dest : out std_logic_vector(2 downto 0);
     -----------------------------
 	 ALU3_op,RF_d2_or:out std_logic_vector (15 downto 0)
     );
@@ -373,7 +378,7 @@ component ALU_3 is
 end component;
 
 signal SE6_op,SE9_op,SE_mux_op,RF_D3_sig,alu3_op_sig,R7_op,rf_d1_sig,rf_d2_sig,rf_d1_mux_sig,rf_d2_mux_sig: std_logic_vector (15 downto 0);
-signal RF_a3_sig,RF_a2_sig,op_PE2: std_logic_vector (2 downto 0);
+signal RF_a3_sig,RF_a2_sig,op_PE2,RS1,RS2: std_logic_vector (2 downto 0);
 signal PE1_mux_op: std_logic_vector(7 downto 0);
 signal not_nullify_ex: std_logic;
 signal dummy_ip19,dummy_ip18, dummy_ip10, dummy_ip9: std_logic;
@@ -384,6 +389,9 @@ dummy_ip19 <= (ID_reg_op(19) and not(nullify_control_OR));
 dummy_ip18 <= (ID_reg_op(18) and not(nullify_control_OR));
 dummy_ip10 <= (ID_reg_op(10) and not(nullify_control_OR));
 dummy_ip9 <= (ID_reg_op(9) and not(nullify_control_OR));
+PE2_dest <= op_PE2;
+RS1 <= ID_reg_op(31 downto 29);
+RS2 <= ID_reg_op(28 downto 26); 
 
 a: SE6 port map (ip=>ID_reg_op(25 downto 20),op=>SE6_op);
 b: SE9 port map (ip=>ID_reg_op(28 downto 20),op=>SE9_op);
@@ -469,10 +477,14 @@ begin
   end process;
 
 process( RF_d1_mux_control,alu2_forward,memd_forward,rf_d1_sig,EX_reg_op_ALU2,mem_reg_op_ALU2,mem_reg_memd
-			,instr08_OR,instr08_EX,instr08_mem)
+			,instr08_OR,instr08_EX,instr08_mem,RS1,ID_reg_op)
 begin
 if(RF_d1_mux_control = "0000") then
-  rf_d1_mux_sig<=rf_d1_sig;
+  if(RS1 /= "111") then
+    rf_d1_mux_sig<=rf_d1_sig;
+  else
+    rf_d1_mux_sig<=ID_reg_op(51 downto 36);
+	end if;
 elsif(RF_d1_mux_control = "0001") then
   rf_d1_mux_sig<=alu2_forward;
 elsif(RF_d1_mux_control = "0010") then
@@ -495,10 +507,14 @@ end if;
 end process;
 
 process( RF_d2_mux_control,alu2_forward,memd_forward,rf_d2_sig,EX_reg_op_ALU2,
-			mem_reg_op_ALU2,mem_reg_memd,instr08_OR,instr08_mem,instr08_EX)
+			mem_reg_op_ALU2,mem_reg_memd,instr08_OR,instr08_mem,instr08_EX,RS2,ID_reg_op)
 begin
 if(RF_d2_mux_control = "0000") then
-  rf_d2_mux_sig<=rf_d2_sig;
+  if(RS2 /= "111") then
+    rf_d2_mux_sig<=rf_d2_sig;
+  else
+    rf_d2_mux_sig<=ID_reg_op(51 downto 36);
+	end if;
 elsif(RF_d2_mux_control = "0001") then
   rf_d2_mux_sig<=alu2_forward;
 elsif(RF_d2_mux_control = "0010") then

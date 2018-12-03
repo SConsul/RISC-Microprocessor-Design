@@ -20,7 +20,7 @@ begin
     elsif EN = '1' and EN_8bits = '1' then
       op <= ip;
     elsif EN = '0' and EN_8bits = '1' then
-      op(7 downto 0)<=ip(7 downto 0);		
+      op(7 downto 0)<=ip(7 downto 0);
     end if;
   end if;
 end process;
@@ -32,7 +32,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 entity ID_stage is
   port(reset,clock,nullify_ID_control,PE2_mux_control,EN_id_control,EN_8bits_control: in std_logic;
-  PE2_ip: std_logic_vector (7 downto 0);
+  PE2_ip: in std_logic_vector (7 downto 0);
   IF_reg_op :in std_logic_vector(32 downto 0);
   ID_reg_op : out std_logic_vector (51 downto 0);
   mem_id_08: out std_logic_vector (15 downto 0)
@@ -75,9 +75,9 @@ a: ID_interface_reg port map(
 		ip(10)=>dummy_ip10,
 		ip(9)=>dummy_ip9,
 		ip(8)=>dummy_ip8,
-		ip(7 downto 0)=>PE2_mux_op,		
+		ip(7 downto 0)=>PE2_mux_op,
 		op=>ID_reg_op);
-		
+
 
 mem_id_08(15 downto 7)<=IF_reg_op(9 downto 1);
 mem_id_08(6 downto 0)<="0000000";
@@ -134,7 +134,7 @@ process(IF_reg_op)
 		RF_D3_mux<="00";
 		flagc_en<='0';
 		flagz_en<='0';
-		
+
 	elsif(IF_reg_op(16 downto 13)="0100") then
 		RF_enable<='1';
 		mem_write<='0';
@@ -153,7 +153,7 @@ process(IF_reg_op)
 		ALU2_op<="00";
 		RF_D3_mux<="11";
 		flagc_en<='0';
-		flagz_en<='0';	
+		flagz_en<='0';
 
 	elsif(IF_reg_op(16 downto 13)="0110") then
 		RF_enable<='1';
@@ -229,14 +229,3 @@ process(IF_reg_op)
 		end if;
 	end process;
 end Behave;
-
-
-
-
-
-
-
-
-
-
-

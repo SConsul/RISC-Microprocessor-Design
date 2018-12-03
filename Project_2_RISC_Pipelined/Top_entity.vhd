@@ -1,3 +1,5 @@
+
+----------------------------------
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -10,11 +12,13 @@ end entity;
 
 architecture Behave of Top_entity is
 
+---------------------------------
+
 component IF_stage is
-  port(reset,clock,validate_control,PC_en_control: in std_logic;
+  port(reset,clock,validate_control,PC_en_control,IF_en: in std_logic;
   PC_control: in std_logic_vector(2 downto 0);
   IF_reg_op : out std_logic_vector (32 downto 0);
-  alu3_out,alu2_out,memd_out,RF_d2,memid_08:in std_logic_vector(15 downto 0)
+  alu3_ex,alu3_out,alu2_out,memd_out,RF_d2,memid_08:in std_logic_vector(15 downto 0)
   );
 end component;
 --------------------
@@ -37,6 +41,8 @@ component OR_stage is
     PE2_op: out std_logic_vector (7 downto 0);
     RF_a3_control,RF_d3_control: in std_logic_vector(1 downto 0);
     RF_d1_mux_control,RF_d2_mux_control: std_logic_vector(3 downto 0);
+	 	 PE2_dest : out std_logic_vector(2 downto 0);
+
     ALU3_op,RF_d2_or:out std_logic_vector (15 downto 0)
     );
 end component;
@@ -47,7 +53,7 @@ port (OR_reg_op: in std_logic_vector(99 downto 0);
 	 PE1_op: out std_logic_vector (7 downto 0);
 	 nullify_control_ex,reset,clock:in std_logic;
 	 EX_reg_op: out std_logic_vector(93 downto 0);
-	 alu2_out,PCtoR7: out std_logic_vector(15 downto 0);
+	  alu3_ex,alu2_out,PCtoR7: out std_logic_vector(15 downto 0);
 	 nullify_ex,alu2_z: out std_logic
 
 );
@@ -81,8 +87,11 @@ ID_opcode,OR_opcode,EX_opcode,mem_opcode,IF_opcode:in std_logic_vector(5 downto 
 dest_EX,dest_OR,dest_ID,dest_IF,RS_id1,RS_id2: in std_logic_vector(2 downto 0);
 nullify_ID,nullify_OR,nullify_EX,alu2z_flag,authentic_c,authentic_z,validate_IF:in std_logic;
 PE1_op,PE2_op:in std_logic_vector(7 downto 0);
-PC_en_control,ID_en,ID_en_8bits,validate_control_if,nullify_control_id,nullify_control_or,nullify_control_ex,nullify_control_mem: out std_logic;
-PC_control: out std_logic_vector(2 downto 0)
+PC_en_control,ID_en,ID_en_8bits,validate_control_if,nullify_control_id,nullify_control_or,nullify_control_ex,nullify_control_mem,IF_en: out std_logic;
+PC_control: out std_logic_vector(2 downto 0);
+ID_intermediate_reg :in std_logic_vector(32 downto 0);
+OR_intermediate_reg: in std_logic_vector (51 downto 0);
+EX_intermediate_reg: in std_logic_vector (99 downto 0)
 );
 end component;
 -----------------
@@ -106,7 +115,7 @@ component write_control is
 
 port(
 opcode_mem,opcode_EX,opcode_OR: in std_logic_vector(5 downto 0);
-flag_z_ex,flag_c_ex,flag_z_mem,flag_c_mem,flagz_enable_ex,flagc_enable_ex,load_flag_z,nullify_ex,rf_write_or,flagc_write_or,flagz_write_or: in std_logic;
+flag_z_ex,flag_c_ex,flag_z_mem,flag_c_mem,user_flagc,user_flagz,flagz_enable_ex,flagc_enable_ex,flagz_enable_mem,flagc_enable_mem,load_flag_z,nullify_ex,rf_write_or,flagc_write_or,flagz_write_or: in std_logic;
 RF_write_out,flagc_write_out,flagz_write_out,authentic_c_op,authentic_z_op: out std_logic
 );
 
@@ -119,7 +128,7 @@ RS_id1,RD_or,RD_ex,RD_mem: in std_logic_vector(2 downto 0);
 ID_opcode: in std_logic_vector(3 downto 0);
 EX_opcode,OR_opcode,mem_opcode: in std_logic_vector(5 downto 0);
 PE1_op,PE2_stored: in std_logic_vector(7 downto 0);
-cflag_ex,cflag_mem,zflag_ex,zflag_mem,nullify_or,nullify_id,nullify_ex,nullify_mem,user_cflag,user_zflag: in std_logic;
+authentic_c,authentic_z,nullify_or,nullify_id,nullify_ex,nullify_mem,user_cflag,user_zflag: in std_logic;
 RF_d1_mux_control: out std_logic_vector(3 downto 0)
 );
 
@@ -130,7 +139,7 @@ port(
 RS_id2,RD_or,RD_ex,RD_mem: in std_logic_vector(2 downto 0);
 ID_opcode: in std_logic_vector(3 downto 0);
 EX_opcode,OR_opcode,mem_opcode: in std_logic_vector(5 downto 0);
-cflag_ex,cflag_mem,zflag_ex,zflag_mem,nullify_or,nullify_id,nullify_ex,nullify_mem,user_cflag,user_zflag: in std_logic;
+authentic_c,authentic_z,nullify_or,nullify_id,nullify_ex,nullify_mem,user_cflag,user_zflag: in std_logic;
 RF_d2_mux_control: out std_logic_vector(3 downto 0)
 );
 
@@ -156,12 +165,14 @@ signal validate_control_sig,
 		EN_id_control_sig,
 		EN_8bits_control_sig,
 		user_zflag_sig,
-		user_cflag_sig: std_logic;
+		user_cflag_sig,
+    IF_en_sig: std_logic;
 signal PE2_ip_signal,PE1_ip_signal:std_logic_vector(7 downto 0);
 signal PC_control_sig,
 		memi35_sig,
 		memi911_sig,
 		PE1_dest_sig,
+		PE2_dest_sig,
     dest_EX_sig,
     dest_OR_sig,
     dest_ID_sig,
@@ -185,7 +196,8 @@ signal alu3_out_sig,
 	   memid_08_sig,
 	   PCtoR7_sig,
 	   left_shifted_sig,
-	   PC_mem_sig: std_logic_vector(15 downto 0);
+	   PC_mem_sig,
+     alu3_ex_sig: std_logic_vector(15 downto 0);
 signal RF_a3_control_sig,RF_d3_control_sig: std_logic_vector(1 downto 0);
 signal IF_reg_op_sig: std_logic_vector(32 downto 0);
 signal ID_reg_op_sig: std_logic_vector(51 downto 0);
@@ -205,8 +217,10 @@ a: IF_stage port map(reset=>reset,
 					alu2_out=>alu2_out_sig,
 					memd_out=>memd_sig,
 					RF_d2=>RF_d2_sig,
-					memid_08=>memid_08_sig
-					);
+					memid_08=>memid_08_sig,
+          alu3_ex => alu3_ex_sig,
+          IF_en=>IF_en_sig
+          );
 
 b: ID_stage port map(reset=>reset,
 					clock=>clock,
@@ -255,7 +269,8 @@ c: OR_stage port map (
     				ALU3_op=>alu3_out_sig,
     				RF_d2_or=>RF_d2_sig,
     				RF_a3_control=>RF_a3_control_sig,
-    				RF_d3_control=>RF_d3_control_sig
+    				RF_d3_control=>RF_d3_control_sig,
+					PE2_dest => PE2_dest_sig
 );
 d:EX_stage port map (
 					OR_reg_op=>OR_reg_op_sig,
@@ -270,7 +285,8 @@ d:EX_stage port map (
 					alu2_out=>alu2_out_sig,
 					PCtoR7=>PCtoR7_sig,
 					nullify_ex=>nullify_ex_sig,
-					alu2_z=>alu2z_sig
+					alu2_z=>alu2z_sig,
+          alu3_ex => alu3_ex_sig
 );
 
 e:Mem_stage port map(
@@ -329,7 +345,11 @@ g: rem_controls port map(
 					nullify_control_or=>nullify_control_OR_sig,
 					nullify_control_ex=>nullify_control_ex_sig,
 					nullify_control_mem=>nullify_control_mem_sig,
-					PC_control=>PC_control_sig
+					PC_control=>PC_control_sig,
+					ID_intermediate_reg => IF_reg_op_sig,
+					OR_intermediate_reg => ID_reg_op_sig,
+					EX_intermediate_reg => OR_reg_op_sig,
+          IF_en => IF_en_sig
 );
 h:PE1_mux_control port map(
 					OR_reg_opcode=>OR_reg_op_sig(83 downto 80),
@@ -361,7 +381,11 @@ j:write_control port map(
 					flagc_write_out=>flagc_write_out_sig,
 					flagz_write_out=>flagz_write_out_sig,
 					authentic_c_op=>authentic_c_sig,
-					authentic_z_op=>authentic_z_sig
+					authentic_z_op=>authentic_z_sig,
+          user_flagc=>user_cflag_sig,
+					user_flagz=>user_zflag_sig,
+					flagz_enable_mem=>mem_reg_op_sig(6),
+					flagc_enable_mem=>mem_reg_op_sig(7)
 );
 k:RF_d1_control port map(
 					RS_id1=>RS_id1_sig,
@@ -374,10 +398,8 @@ k:RF_d1_control port map(
 					mem_opcode=>mem_opcode_sig,
 					PE1_op=>PE1_ip_signal,
 					PE2_stored=>ID_reg_op_sig(7 downto 0),
-					cflag_ex=>EX_reg_op_sig(2),
-					cflag_mem=>mem_reg_op_sig(2),
-					zflag_ex=>EX_reg_op_sig(1),
-					zflag_mem=>mem_reg_op_sig(1),
+					authentic_c=>authentic_c_sig,
+          authentic_z=>authentic_z_sig,
 					nullify_or=>OR_reg_op_sig(8),
 					nullify_id=>ID_reg_op_sig(8),
 					nullify_ex=>nullify_ex_sig,
@@ -396,10 +418,8 @@ l: RF_d2_control port map(
 					EX_opcode=>EX_opcode_sig,
 					OR_opcode=>OR_opcode_sig,
 					mem_opcode=>mem_opcode_sig,
-					cflag_ex=>EX_reg_op_sig(2),
-					cflag_mem=>mem_reg_op_sig(2),
-					zflag_ex=>EX_reg_op_sig(1),
-					zflag_mem=>mem_reg_op_sig(1),
+          authentic_c=>authentic_c_sig,
+          authentic_z=>authentic_z_sig,
 					nullify_or=>OR_reg_op_sig(8),
 					nullify_id=>ID_reg_op_sig(8),
 					nullify_ex=>nullify_ex_sig,
@@ -430,7 +450,7 @@ case(OR_reg_op_sig(83 downto 80)) is
   when "0100" =>
     dest_OR_sig <= OR_reg_op_sig(79 downto 77);
   when others =>
-    dest_OR_sig <= "000";
+    dest_OR_sig <= "111";
 end case;
 end process;
 
@@ -445,20 +465,26 @@ begin
       RS_id1_sig <= ID_reg_op_sig(31 downto 29);
     when "0101" =>
       RS_id1_sig <= ID_reg_op_sig(31 downto 29);
+    when "0111" =>
+      RS_id1_sig <= ID_reg_op_sig(31 downto 29);
     when others =>
       RS_id1_sig <= "000";
   end case;
 end process;
 
-process(ID_reg_op_sig)
+process(ID_reg_op_sig,PE2_dest_sig)
 begin
   case(ID_reg_op_sig(35 downto 32)) is
     when "0000" =>
       RS_id2_sig <= ID_reg_op_sig(28 downto 26);
     when "0010" =>
       RS_id2_sig <= ID_reg_op_sig(28 downto 26);
+    when "0101" =>
+      RS_id2_sig <= ID_reg_op_sig(28 downto 26);
+    when "0111" =>
+      RS_id2_sig <= PE2_dest_sig;
     when others =>
-      RS_id2_sig <= "000";
+      RS_id2_sig <= "111";
   end case;
 end process;
 
@@ -473,6 +499,8 @@ begin
       RD_or_sig <= OR_reg_op_sig(79 downto 77);
     when "0011" =>
       RD_or_sig <= OR_reg_op_sig(79 downto 77);
+    when "0100" =>
+      RD_or_sig <= OR_reg_op_sig(79 downto 77);
     when others =>
       RD_or_sig <= "000";
   end case;
@@ -480,10 +508,10 @@ end process;
 
 process(EX_reg_op_sig)
 begin
--- CHECK THIS!! 
+-- CHECK THIS!!
   case(EX_reg_op_sig(77 downto 74)) is
     when "0000" =>
-      RD_ex_sig <= EX_reg_op_sig(67 downto 65); 
+      RD_ex_sig <= EX_reg_op_sig(67 downto 65);
     when "0010" =>
       RD_ex_sig <= EX_reg_op_sig(67 downto 65);
     when "0001" =>
@@ -492,6 +520,8 @@ begin
       RD_ex_sig <= EX_reg_op_sig(73 downto 71);
     when "0100" =>
       RD_ex_sig <= EX_reg_op_sig(73 downto 71);
+    when "0110" =>
+      RD_ex_sig <= EX_reg_op_sig(5 downto 3);
     when others =>
       RD_ex_sig <= "000";
   end case;
